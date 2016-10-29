@@ -8,6 +8,8 @@ using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Dialogs;
+using System.Collections.Generic;
+using TVJeeves.Base.BusinessLogic;
 
 namespace TVJeeves
 {
@@ -15,25 +17,21 @@ namespace TVJeeves
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-
-        public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
+        public virtual async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
-            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-            if (activity.Type == ActivityTypes.Message)
+            // check if activity is of type message
+            if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);
+                await Conversation.SendAsync(activity, () => new EchoDialog());
             }
             else
             {
                 HandleSystemMessage(activity);
             }
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            return response;
+            return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
+
+
 
         private Activity HandleSystemMessage(Activity message)
         {
@@ -62,6 +60,81 @@ namespace TVJeeves
             }
 
             return null;
+        }
+    }
+
+
+    [Serializable]
+    public class EchoDialog : IDialog<object>
+    {
+        public async Task StartAsync(IDialogContext context)
+        {
+            context.Wait(MessageReceivedAsync);
+
+        }
+        public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        {
+            await new SuggestionDialog().StartAsync(context);
+        }
+    }
+
+    [Serializable]
+    public class SuggestionDialog : IDialog<object>
+    {
+        public async Task StartAsync(IDialogContext context)
+        {
+            var cc = context.MakeMessage();
+
+            cc.Text = "Do any of these things sound good?";
+            context.PostAsync(cc);
+            
+            var replyToConversation = context.MakeMessage();
+
+            replyToConversation.Type = "message";
+            replyToConversation.Attachments = new List<Attachment>();
+
+            var suggestions = new SuggestionService().GetUserSuggestions();
+
+            foreach (var suggestion in suggestions)
+            {
+                List<CardImage> cardImages = new List<CardImage>();
+                cardImages.Add(new CardImage(url: suggestion.ImageUrl));
+
+                List<CardAction> cardButtons = new List<CardAction>();
+                CardAction plButton = new CardAction()
+                {
+                    Value = "watch",
+                    Type = "postBack",
+                    Title = "Watch"
+                };
+                cardButtons.Add(plButton);
+
+                HeroCard plCard = new HeroCard()
+                {
+                    Title = suggestion.Name,
+                    Subtitle = suggestion.Channel,
+                    Images = cardImages,
+                    Buttons = cardButtons
+                };
+                Attachment plAttachment = plCard.ToAttachment();
+                replyToConversation.Attachments.Add(plAttachment);
+            }
+
+
+            replyToConversation.AttachmentLayout = "carousel";
+
+            await context.PostAsync(replyToConversation);
+            context.Wait(HandleSuggestionResponse);
+        }
+
+        public async Task HandleSuggestionResponse(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        {
+            var message = await argument;
+
+            var cc = context.MakeMessage();
+
+            cc.Text = "That works" + message.Text;
+            await context.PostAsync(cc);
         }
     }
 }
