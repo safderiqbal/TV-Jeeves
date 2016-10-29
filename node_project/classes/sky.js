@@ -1,12 +1,14 @@
 const setup = require('../resources/init');
 const fuzzy = require('fuzzy');
+const request = require('request');
+const moment = require('moment');
 
 let getChannelType = (id) => {
     return setup.types.filter((element) => {
         if (id === element.typeid)
             return element;
     });
-}
+};
 
 let getEpgGenre = (id) => {
     return setup.epggenre.filter((element) => {
@@ -52,5 +54,13 @@ exports.matchChannel = (channelName, numResults, callback) => {
 };
 
 exports.getCurrentShow = (channelId, callback) => {
-    
+    request.get(`http://epgservices.sky.com/tvlistings-proxy/TVListingsProxy/tvlistings.json?channels=${channelId}&time=${moment().format('YYYYMMDDHH') + '00'}&dur=119&siteId=1&detail=2`,
+        (error, response, body) => {
+            if(!!error)
+                callback(error);
+
+            let data = JSON.parse(body);
+
+            callback(null, data.channels.program[0]);
+        });
 };
