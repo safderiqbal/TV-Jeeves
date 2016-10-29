@@ -1,0 +1,26 @@
+{
+  "name": "tv-jeeves-node",
+  "private": true,
+  "version": "0.0.1",
+  "description": "TV-Jeeves interactions with node (OMDB & ClockworkSMS)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/safderiqbal/TV-Jeeves.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/safderiqbal/TV-Jeeves/issues"
+  },
+  "homepage": "https://github.com/safderiqbal/TV-Jeeves#readme",
+  "devDependencies": {
+    "clockwork": "^0.1.4",
+    "config": "^1.21.0",
+    "express": "^4.14.0",
+    "omdb": "^0.7.0"
+  }
+}
