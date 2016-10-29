@@ -35,6 +35,10 @@ namespace TVJeeves.Dialog
                         {
                             var res = await response;
                             var channels = new ChannelService().Get(res);
+
+                            if (!channels.Any())
+                                return Chain.Return("Sorry, could not find any channels matching " + res);
+
                             return Chain.Return("Are you watching " + channels.First().title);
                         }
                         return Chain.Return("could not get your response");
