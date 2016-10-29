@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 
-// INSERT ENDPOINTS HERE
+app.get('/omdb/:title', endpoints.getFromTitle);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
