@@ -20,7 +20,11 @@ app.use(bodyParser.urlencoded({
 app.get('/omdb/:title', endpoints.getShowFromTitle);
 
 app.get('/sms/:to/:body', endpoints.sendSms);
-app.get('/sky/:title', endpoints.getChannelFromName);
+
+app.get('/sky/channel/:channel', endpoints.getChannelFromName);
+// TODO
+app.get('/sky/channel/current/:channelId', endpoints.getCurrentShowFromChannel);
+app.get('/sky/channel/upcoming/:channel', endpoints.getChannelUpcoming);
 
 // log 404s
 app.get('/*', (req, res) => {

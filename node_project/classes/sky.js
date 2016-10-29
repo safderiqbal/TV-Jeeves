@@ -50,3 +50,7 @@ exports.matchChannel = (channelName, numResults, callback) => {
 
     return callback({error: 'Could not find a matching channel'});
 };
+
+exports.getCurrentShow = (channelId, callback) => {
+    
+};
