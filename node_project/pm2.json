@@ -1,0 +1,7 @@
+{
+    "apps" : [{
+        "name"   : "hackmcr2016",
+        "script" : "./app.js",
+        "watch"  : true
+    }]
+}
