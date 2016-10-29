@@ -6,8 +6,7 @@ const omdb      = require('omdb');
 
 // OMDB
 let getShowFromTitle = (title, callback) => {
-
-    console.log('omdb - getFromTitle - title : ' + title);
+    console.log('omdb - getShowFromTitle - title : ' + title);
     omdb.get({title}, true, (err, show) => {
         if (err)
             return callback(err);
@@ -19,15 +18,6 @@ let getShowFromTitle = (title, callback) => {
     });
 };
 
-let getChannelFromName = (channelName, results, callback) => {
-    results = results || 5;
-    sky.matchChannel(channelName, results, (error, data) => {
-        return !error
-            ? callback(null, data)
-            : callback(error);
-    });
-};
-
 exports.getShowFromTitle = (req, res) => {
     getShowFromTitle(req.params.title, (error, data) => {
         if (!!error)
@@ -36,6 +26,27 @@ exports.getShowFromTitle = (req, res) => {
         res.send(data);
     });
 };
+
+// Sky
+
+let getChannelFromName = (channelName, results, callback) => {
+    console.log('sky - getChannelFromName - channelName : ' + channelName + ' results : ' + results);    
+    results = results || 5;
+    sky.matchChannel(channelName, results, (error, data) => {
+        return !error
+            ? callback(null, data)
+            : callback(error);
+    });
+};
+
+exports.getChannelFromName = (req, res) => {
+    getChannelFromName(req.params.title, req.query.results, (error, data) => {
+        if (!!error)
+            res.status(400).send(error);
+
+        res.send(data);
+    })
+}
 
 // Clockwork SMS
 
@@ -60,12 +71,3 @@ exports.sendSms = (req, res) => {
         res.send(data);
     })
 };
-
-exports.getChannelFromName = (req, res) => {
-    getChannelFromName(req.params.title, req.query.results, (error, data) => {
-        if (!!error)
-            res.status(400).send(error);
-
-        res.send(data);
-    })
-}
