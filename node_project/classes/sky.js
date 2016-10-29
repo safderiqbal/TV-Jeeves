@@ -49,3 +49,4 @@ exports.matchChannel = (channelName, numResults, callback) => {
     }
 
     return callback({error: 'Could not find a matching channel'});
+};

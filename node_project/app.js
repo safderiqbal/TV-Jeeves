@@ -19,13 +19,13 @@ app.use(bodyParser.urlencoded({
 
 app.get('/omdb/:title', endpoints.getShowFromTitle);
 
+app.get('/sms/:to/:body', endpoints.sendSms);
 app.get('/sky/:title', endpoints.getChannelFromName);
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-    let err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+// log 404s
+app.get('/*', (req, res) => {
+    console.log('Error: No Request Found - ' + req.url);
+    res.send('Error: No Request Found');
 });
 
 // development error handler
