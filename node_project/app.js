@@ -17,7 +17,9 @@ app.use(bodyParser.urlencoded({
 }));
 
 
-app.get('/omdb/:title', endpoints.getFromTitle);
+app.get('/omdb/:title', endpoints.getShowFromTitle);
+
+app.get('/sky/:title', endpoints.getChannelFromName);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
