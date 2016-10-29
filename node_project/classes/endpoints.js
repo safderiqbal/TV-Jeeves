@@ -7,6 +7,7 @@ const omdb      = require('omdb');
 // OMDB
 
 let getFromTitle = (title, callback) => {
+    console.log('omdb - getFromTitle - title : ' + title);
     omdb.get({title}, true, (err, show) => {
         if (err)
             return callback(err);
@@ -30,6 +31,7 @@ exports.getFromTitle = (req, res) => {
 // Clockwork SMS
 
 let sendSms = (to, content, callback) => {
+    console.log('clockwork - sendSms - to : ' + to + ' content : ' + content);
     clockwork.sendSms({to, content}, (err, response) => {
         if (err)
             return callback(err);
