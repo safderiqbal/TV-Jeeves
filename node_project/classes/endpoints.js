@@ -99,6 +99,27 @@ let getRandomShow = (callback) => {
     });
 };
 
+let getGenreWithChannel = (genreId, subGenreId, callback) => {
+    console.log('sky - getGenreWithChannel - genreId : ' + genreId + ' subGenreId : ' + subGenreId);
+
+    sky.getMatchingGenre(genreId, subGenreId, (error, showData) => {
+        if (!!error)
+            return callback(error);
+
+        showData.forEach((show) => {
+            sky.matchChannelId(show.channelid, (error2, channelData) => {
+                if (!!error2)
+                    return callback(error2);
+
+                delete show.channelid;
+                show.channel = channelData;
+            });
+        });
+
+        callback(null, showData);
+    });
+}
+
 exports.getChannelFromName = (req, res) => {
     getChannelFromName(req.params.channelName, req.query.results, (error, data) => {
         if (!!error)
@@ -137,6 +158,15 @@ exports.getMatchingGenre = (req, res) => {
 
 exports.getRandomShow = (req, res) => {
     getRandomShow((error, data) => {
+        if (!!error)
+            return res.status(400).send(error);
+
+        return res.send(data);
+    });
+}
+
+exports.getGenreWithChannel = (req, res) => {
+    getGenreWithChannel(req.params.genreId, req.query.subGenreId, (error, data) => {
         if (!!error)
             return res.status(400).send(error);
 
