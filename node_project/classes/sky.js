@@ -24,6 +24,26 @@ let getGenre = (id) => {
     });
 };
 
+let getAllChannelListing = (errorMessage, callback) => {
+    let channelNos = setup.channels.map((val) => {
+        return val.channelid;
+    }).join(',');
+
+    request.get(`http://epgservices.sky.com/tvlistings-proxy/TVListingsProxy/tvlistings.json?channels=${encodeURI(channelNos)}&time=${moment().format('YYYYMMDDHH') + '00'}&dur=119&siteId=1&detail=2`,
+        (error, response, body) => {
+            if (!!error)
+                return callback(error);
+
+            let data = JSON.parse(body);
+
+            if (!data.channels || data.channels.length < 1)
+                return callback({error: errorMessage});
+
+            return callback(null, data);
+        }
+    );
+}
+
 exports.matchChannelName = (channelName, numResults, callback) => {
     const options = {
         extract: (ele) => {
@@ -87,36 +107,45 @@ exports.getCurrentShow = (channelId, callback) => {
 exports.getMatchingGenre = (genreId, subGenreId, callback) => {
     subGenreId = subGenreId || '';
 
-    let channelNos = setup.channels.map((val) => {
-        return val.channelid;
-    }).join(',');
+    getAllChannelListing('Could not find a matching show of that genre',  (error, data) => {
+        if (!!error)
+            return callback(error);
 
-    request.get(`http://epgservices.sky.com/tvlistings-proxy/TVListingsProxy/tvlistings.json?channels=${encodeURI(channelNos)}&time=${moment().format('YYYYMMDDHH') + '00'}&dur=119&siteId=1&detail=2`,
-        (error, response, body) => {
-            if (!!error)
-                return callback(error);
+        let results = data.channels.filter((val) => {
+            return val.program.genre === genreId;
+        });
 
-            let data = JSON.parse(body);
-
-            if (!data.channels || data.channels.length < 1)
-                return callback({error: 'Could not find a matching show of that genre'});
-
-            let results = data.channels.filter((val) => {
-                return val.program.genre === genreId;
+        if (subGenreId !== '') {
+            results = results.filter((val) => {
+                return val.program.subgenre === subGenreId;
             });
-
-            if (subGenreId !== '') {
-                results = results.filter((val) => {
-                    // console.log('val.subgenre=' + val.subgenre + '\tsubGenreId=')
-                    return val.program.subgenre === subGenreId;
-                })
-            }
-
-            results = results.map((val) => {
-                return val.program;
-            });
-
-            callback(null, results);
         }
-    );
-}
+
+        results = results.map((val) => {
+            return val.program;
+        });
+
+        callback(null, results);
+    });
+};
+
+exports.getRandomShow = (eventId, callback) => {
+    getAllChannelListing('Could not find the current show you are watching', (error, data) => {
+        if (!!error)
+            return callback(error);
+
+        return callback(null, data);
+
+        data.channels.map((val) => {
+            console.log(val.program);
+        });
+        
+        let result = data.channels.filter((val) => {
+            return val.program.eventid === eventId;
+        });
+
+        result = result.program;
+
+        callback(null, result);
+    });
+};

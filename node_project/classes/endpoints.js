@@ -89,6 +89,15 @@ let getMatchingGenre = (genreId, subGenreId, callback) => {
     });
 };
 
+let getRandomShow = (eventId, callback) => {
+    console.log('sky - getRandomShow - eventId : ' + eventId);
+    sky.getRandomShow(eventId, (error, data) => {
+        return !error
+            ? callback(null, data)
+            : callback(error);
+    });
+};
+
 exports.getChannelFromName = (req, res) => {
     getChannelFromName(req.params.channelName, req.query.results, (error, data) => {
         if (!!error)
@@ -124,3 +133,12 @@ exports.getMatchingGenre = (req, res) => {
         return res.send(data);
     });
 };
+
+exports.getRandomShow = (req, res) => {
+    getRandomShow(req.params.eventId, (error, data) => {
+        if (!!error)
+            return res.status(400).send(error);
+
+        return res.send(data);
+    });
+}
