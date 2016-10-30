@@ -71,6 +71,15 @@ namespace TVJeeves.Dialog
                        return Chain.Return($"you are watching {channel.Item1}");
                    });
                }),
+               new RegexCase<IDialog<string>>(new Regex("^surprise", RegexOptions.IgnoreCase), (context, txt) =>
+               {
+                   return Chain.ContinueWith(new SurpriseDialog(),
+                          async (ctx, res) =>
+                          {
+                              await res;
+                              return Chain.Return(baseGreeting);
+                          });
+               }),
                new DefaultCase<string, IDialog<string>>((context, txt) =>
                {
                    bool welcomeMessageSeen;
