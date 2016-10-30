@@ -64,6 +64,7 @@ let getChannelFromName = (channelName, results, callback) => {
 };
 
 let getChannelFromId = (channelId, callback) => {
+    console.log('sky - getChannelFromId - channelId : ' + channelId);  
     sky.matchChannelId(channelId, (error, data) => {
         return !error
             ? callback(null, data)
