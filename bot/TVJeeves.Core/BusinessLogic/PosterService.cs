@@ -12,7 +12,7 @@ namespace TVJeeves.Core.BusinessLogic
 
         public PosterService()
         {
-            ApiEndpoint = "http://hack2016.trivv.io//omdb/poster/";
+            ApiEndpoint = "http://hack2016.trivv.io/omdb/poster/";
         }
 
         public Poster Get(string title)
