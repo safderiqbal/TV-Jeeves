@@ -112,14 +112,15 @@ namespace TVJeeves.Dialog
                 cc.Attachments = new List<Attachment>();
 
                 var poster = new PosterService().Get(tvShow.title);
-                var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://cdn.instructables.com/FTU/1BBR/FLI8MT4O/FTU1BBRFLI8MT4O.MEDIUM.jpg";
+                var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRj0YzDMrnC8kqGjvTH3tQ_VpVY4HbtcpGCNcJ_tR4WdiMKvjYc";
 
                 var plCard = new ThumbnailCard()
                 {
                     Title = tvShow.title,
                     Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelid + ") - " + tvShow.startAsDateTime.ToString(),
                     Text = $"{tvShow.shortDesc}",
-                    Images = new List<CardImage> { new CardImage(url: imgUrl) }
+                    Images = new List<CardImage> { new CardImage(url: imgUrl) },
+                    Buttons = new List<CardAction> { new CardAction() { Value = "watch", Type = "postBack", Title = "Watch" } }
                 };
                 Attachment plAttachment = plCard.ToAttachment();
                 cc.Attachments.Add(plAttachment);
