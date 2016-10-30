@@ -12,9 +12,9 @@ namespace TVJeeves.Core.Entities
 
         public int channelid { get; set; }
 
-        public DateTime date { get; set; }
+        //public DateTime date { get; set; }
 
-        public DateTime start { get; set; }
+        //public DateTime start { get; set; }
 
         public int dur { get; set; }
 
@@ -27,5 +27,7 @@ namespace TVJeeves.Core.Entities
         public int subgenre { get; set; }
 
         public string scheduleStatus { get; set; }
+
+        public Channel channel {get;set;}
     }
 }

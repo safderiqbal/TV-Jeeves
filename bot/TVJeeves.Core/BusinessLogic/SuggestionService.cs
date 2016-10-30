@@ -40,7 +40,8 @@ namespace TVJeeves.Base.BusinessLogic
                         EventId = item.eventid,
                         Name = item.title,
                         Channel = item.channelid,
-                        GenreId = item.genre
+                        GenreId = item.genre,
+                        SubGenreId = item.subgenre
                     };
                     suggestions.Add(sg);
                     savedSuggestions[sg.EventId] = sg;
