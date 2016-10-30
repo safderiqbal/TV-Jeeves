@@ -104,7 +104,15 @@ exports.getCurrentShow = (channelId, callback) => {
                 return callback({error: 'Invalid channel ID'});
             }
 
-            callback(null, data.channels.program[0]);
+            if (!(data.channels instanceof Array)) {
+                data.channels = [data.channels];
+            }
+            
+            data.channels.map((val) => {
+                return val.program[0];
+            })
+
+            callback(null, data.channels);
         });
 };
 
