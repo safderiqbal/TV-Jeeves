@@ -112,7 +112,9 @@ exports.getCurrentShow = (channelId, callback) => {
             if(!!error)
                 callback(error);
 
+
             let data = JSON.parse(body);
+
 
             if (!(data.channels instanceof Array)) { 
                 let tmp = [];
@@ -121,6 +123,11 @@ exports.getCurrentShow = (channelId, callback) => {
             } 
              
             data.channels = data.channels.map((val) => { 
+                if (!(val.program instanceof Array)) {
+                    let tmp = [];
+                    tmp.push(val.program);
+                    val.program = tmp;
+                }
                 return val.program[0]; 
             });
  
