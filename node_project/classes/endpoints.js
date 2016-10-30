@@ -90,9 +90,9 @@ let getMatchingGenre = (genreId, subGenreId, callback) => {
     });
 };
 
-let getRandomShow = (eventId, callback) => {
-    console.log('sky - getRandomShow - eventId : ' + eventId);
-    sky.getRandomShow(eventId, (error, data) => {
+let getRandomShow = (callback) => {
+    console.log('sky - getRandomShow');
+    sky.getRandomShow((error, data) => {
         return !error
             ? callback(null, data)
             : callback(error);
@@ -136,7 +136,7 @@ exports.getMatchingGenre = (req, res) => {
 };
 
 exports.getRandomShow = (req, res) => {
-    getRandomShow(req.params.eventId, (error, data) => {
+    getRandomShow((error, data) => {
         if (!!error)
             return res.status(400).send(error);
 
