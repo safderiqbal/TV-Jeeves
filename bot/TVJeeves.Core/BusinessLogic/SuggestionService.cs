@@ -39,7 +39,8 @@ namespace TVJeeves.Base.BusinessLogic
                     {
                         EventId = item.eventid,
                         Name = item.title,
-                        Channel = item.channelid
+                        Channel = item.channelid,
+                        Description = item.shortdesc
                     };
                     suggestions.Add(sg);
                     savedSuggestions[sg.EventId] = sg;
