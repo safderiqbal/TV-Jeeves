@@ -80,7 +80,11 @@ namespace TVJeeves.Dialog
 
         private async Task ShowProgrammeList(IDialogContext context, string typeOfChannel, string channels)
         {
+            await context.PostAsync("Please wait...");
+
             var cc = context.MakeMessage();
+            cc.Attachments = new List<Attachment>();
+            cc.Type = "message";
             var suggestions = new SuggestionService().GetProgrammesOnChannels(channels);
             string text = "On the " + typeOfChannel + " channels now...";
 
@@ -88,13 +92,29 @@ namespace TVJeeves.Dialog
             foreach (var suggestion in suggestions)
             {
                 context.UserData.SetValue("sp" + count, suggestion.eventid);//.EventId);
-                text += "\n1. _" + suggestion.title;//.Name;
-                text += "_ on " + suggestion.channel.title;//.Channel; //+ " for the next ";// + (suggestion.EndTime - DateTime.Now).Minutes;
+
+                    var poster = new PosterService().Get(suggestion.title);
+                    var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRj0YzDMrnC8kqGjvTH3tQ_VpVY4HbtcpGCNcJ_tR4WdiMKvjYc";
+
+                    var plCard = new ThumbnailCard()
+                    {
+                        Title = $"{count}. " + suggestion.title,
+                        Subtitle = suggestion.channel.title + " (" + suggestion.channel.channelno + ") - " + suggestion.startAsDateTime.ToString(),
+                        Text = $"{suggestion.shortDesc} - {suggestion.startAsDateTime.ToString()}",
+                        Images = new List<CardImage> { new CardImage(url: imgUrl) }
+                    };
+                    Attachment plAttachment = plCard.ToAttachment();
+                    cc.Attachments.Add(plAttachment);
+
+
+                //text += "\n1. _" + suggestion.title;//.Name;
+                //text += "_ on " + suggestion.channel.title;//.Channel; //+ " for the next ";// + (suggestion.EndTime - DateTime.Now).Minutes;
                 count++;
             }
-            text += "\n\nWould you like more details of any of these? Enter the number for more details.";
+            //text += "\n\nWould you like more details of any of these? Enter the number for more details.";
             cc.Text = text;
             await context.PostAsync(cc);
+            await context.PostAsync("\n\nWould you like more details of any of these? Enter the number for more details.");
 
             context.Wait(HandleProgramSelection);
         }
