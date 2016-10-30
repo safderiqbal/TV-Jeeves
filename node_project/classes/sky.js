@@ -64,3 +64,40 @@ exports.getCurrentShow = (channelId, callback) => {
             callback(null, data.channels.program[0]);
         });
 };
+
+exports.getMatchingGenre = (genreId, subGenreId, callback) => {
+    subGenreId = subGenreId || '';
+
+    let channelNos = setup.channels.map((val) => {
+        return val.channelid;
+    }).join(',');
+
+    request.get(`http://epgservices.sky.com/tvlistings-proxy/TVListingsProxy/tvlistings.json?channels=${encodeURI(channelNos)}&time=${moment().format('YYYYMMDDHH') + '00'}&dur=119&siteId=1&detail=2`,
+        (error, response, body) => {
+            if (!!error)
+                return callback(error);
+
+            let data = JSON.parse(body);
+
+            if (!data.channels || data.channels.length < 1)
+                return callback({error: 'Could not find a matching show of that genre'});
+
+            let results = data.channels.filter((val) => {
+                return val.program.genre === genreId;
+            });
+
+            if (subGenreId !== '') {
+                results = results.filter((val) => {
+                    // console.log('val.subgenre=' + val.subgenre + '\tsubGenreId=')
+                    return val.program.subgenre === subGenreId;
+                })
+            }
+
+            results = results.map((val) => {
+                return val.program;
+            });
+
+            callback(null, results);
+        }
+    );
+}

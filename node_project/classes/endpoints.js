@@ -71,6 +71,14 @@ let getCurrentShowFromChannel = (channelId, callback) => {
     });
 };
 
+let getMatchingGenre = (genreId, subGenreId, callback) => {
+    sky.getMatchingGenre(genreId, subGenreId, (error, data) => {
+        return !error
+            ? callback(null, data)
+            : callback(error);
+    });
+};
+
 exports.getChannelFromName = (req, res) => {
     getChannelFromName(req.params.channel, req.query.results, (error, data) => {
         if (!!error)
@@ -82,6 +90,15 @@ exports.getChannelFromName = (req, res) => {
 
 exports.getCurrentShowFromChannel = (req, res) => {
     getCurrentShowFromChannel(req.params.channelId, (error, data) => {
+        if (!!error)
+            res.status(400).send(error);
+
+        res.send(data);
+    });
+};
+
+exports.getMatchingGenre = (req, res) => {
+    getMatchingGenre(req.params.genreId, req.query.subGenreId, (error, data) => {
         if (!!error)
             res.status(400).send(error);
 
