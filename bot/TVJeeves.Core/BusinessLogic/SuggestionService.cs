@@ -41,7 +41,7 @@ namespace TVJeeves.Base.BusinessLogic
                         Name = item.title,
                         Channel = item.channelid,
                         GenreId = item.genre,
-                        Description = item.shortDesc
+                        Description = item.shortDesc,
                         SubGenreId = item.subgenre
                     };
                     suggestions.Add(sg);
