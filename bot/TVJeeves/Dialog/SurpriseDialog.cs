@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using TVJeeves.Core.BusinessLogic;
 
 namespace TVJeeves.Dialog
 {
@@ -14,11 +15,12 @@ namespace TVJeeves.Dialog
         public async Task StartAsync(IDialogContext context)
         {
             var cc = context.MakeMessage();
+            var tvShow = new ShowService().Random();
 
-            cc.Text = "I've selected a surprise show for you...";
+            cc.Text = "I've selected a surprise show for you...\n";
+            cc.Text += $"{tvShow.channel.channelno}. {tvShow.channel.title} **{tvShow.title}** {tvShow.shortDesc} on at *{tvShow.startAsDateTime.ToString()}*";
             await context.PostAsync(cc);
-
-            context.Wait(HandleSuggestionResponse);
+            context.Reset();
         }
 
         public async Task HandleSuggestionResponse(IDialogContext context, IAwaitable<IMessageActivity> argument)

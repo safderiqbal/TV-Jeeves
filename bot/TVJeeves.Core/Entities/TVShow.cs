@@ -12,9 +12,18 @@ namespace TVJeeves.Core.Entities
 
         public int channelid { get; set; }
 
-        //public DateTime date { get; set; }
+        public string date { get; set; }
 
-        //public DateTime start { get; set; }
+        public DateTime startAsDateTime
+        {
+            get
+            {
+                var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                return epoch.AddMilliseconds(Convert.ToDouble(start));
+            }
+        }
+
+        public string start { get; set; }
 
         public int dur { get; set; }
 

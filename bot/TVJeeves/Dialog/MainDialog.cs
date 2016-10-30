@@ -76,12 +76,13 @@ namespace TVJeeves.Dialog
 
                        var shows = new GenreService().Get(genre.genreid, currentlyOnChannel.SubGenreId).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
 
-                       var output = $"Here are some other programs currently showing of the same genre of {genre.name} \n";
+                       var output = $"You are currently watching **{currentlyOnChannel.Name}**\n";
+                       output += $"Here are some other programs currently showing of the same genre of **{genre.name}** \n";
 
                        for (int i = 0; i < (shows.Count >= 10 ? 10: shows.Count); i++)
                        {
                            output += $"{shows[i].channel.channelno}. {shows[i].channel.title} {shows[i].title} \n";
-                           output += $"**Short Desc** {shows[i].shortDesc} \n";
+                           output += $"**Short Desc** {shows[i].shortDesc} *{shows[i].startAsDateTime}*\n";
                        }
 
                        return Chain.Return(output);

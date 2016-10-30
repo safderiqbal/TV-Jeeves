@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessLogic\ShowService.cs" />
     <Compile Include="BusinessLogic\GenreService.cs" />
     <Compile Include="BusinessLogic\SuggestionService.cs" />
     <Compile Include="Entities\Channel.cs" />
