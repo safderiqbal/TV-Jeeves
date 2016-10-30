@@ -90,15 +90,6 @@ let getMatchingGenre = (genreId, subGenreId, callback) => {
     });
 };
 
-let getRandomShow = (callback) => {
-    console.log('sky - getRandomShow');
-    sky.getRandomShow((error, data) => {
-        return !error
-            ? callback(null, data)
-            : callback(error);
-    });
-};
-
 let getGenreWithChannel = (genreId, subGenreId, callback) => {
     console.log('sky - getGenreWithChannel - genreId : ' + genreId + ' subGenreId : ' + subGenreId);
 
@@ -119,6 +110,28 @@ let getGenreWithChannel = (genreId, subGenreId, callback) => {
         callback(null, showData);
     });
 }
+
+let getRandomShow = (callback) => {
+    console.log('sky - getRandomShow');
+
+    sky.getRandomShow((error, showData) => {
+        if (!!error)
+            return callback(error);
+
+        if (!showData)
+            return callback({error: 'No show data returned'});
+
+        sky.matchChannelId(showData.channelid, (error2, channelData) => {
+            if (!!error2)
+                return callback(error2);
+            
+            delete showData.channelid;
+            showData.channel = channelData;
+
+            callback(null, showData);
+        });
+    })
+};
 
 exports.getChannelFromName = (req, res) => {
     getChannelFromName(req.params.channelName, req.query.results, (error, data) => {
@@ -156,15 +169,6 @@ exports.getMatchingGenre = (req, res) => {
     });
 };
 
-exports.getRandomShow = (req, res) => {
-    getRandomShow((error, data) => {
-        if (!!error)
-            return res.status(400).send(error);
-
-        return res.send(data);
-    });
-}
-
 exports.getGenreWithChannel = (req, res) => {
     getGenreWithChannel(req.params.genreId, req.query.subGenreId, (error, data) => {
         if (!!error)
@@ -173,3 +177,12 @@ exports.getGenreWithChannel = (req, res) => {
         return res.send(data);
     });
 }
+
+exports.getRandomShow = (req, res) => {
+    getRandomShow((error, data) => {
+        if (!!error)
+            return res.status(400).send(error);
+            
+        return res.send(data);
+    });
+};
