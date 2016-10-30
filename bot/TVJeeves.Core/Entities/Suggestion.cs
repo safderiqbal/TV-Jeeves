@@ -7,6 +7,8 @@ namespace TVJeeves.Base.Entities
 {
     public class Suggestion
     {
+        public string EventId { get; set; }
+
         public string Name { get; set; }
 
         public string ImageUrl { get; set; }

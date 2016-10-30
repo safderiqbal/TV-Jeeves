@@ -24,12 +24,16 @@ namespace TVJeeves.Dialog
                           async (ctx, res) =>
                           {
                               await res;
-                              return Chain.ContinueWith(new SuggestionDialog(),
-                                  async (ctx1, res1) =>
-                                  {
-                                      await res1;
-                                      return Chain.Return(baseGreeting);
-                                  });
+                              return Chain.Return(baseGreeting);
+                           });
+               }),
+               new RegexCase<IDialog<string>>(new Regex("^suggest", RegexOptions.IgnoreCase), (context, txt) =>
+               {
+                   return Chain.ContinueWith(new SuggestionDialog(),
+                          async (ctx, res) =>
+                          {
+                              await res;
+                              return Chain.Return(baseGreeting);
                           });
                }),
                new DefaultCase<string, IDialog<string>>((context, txt) =>

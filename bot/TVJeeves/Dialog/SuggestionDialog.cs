@@ -29,6 +29,7 @@ namespace TVJeeves.Dialog
 
             var sportSuggestions = new SuggestionService().GetUserSuggestions();
 
+            
             foreach (var suggestion in sportSuggestions)
             {
                 List<CardImage> cardImages = new List<CardImage>();

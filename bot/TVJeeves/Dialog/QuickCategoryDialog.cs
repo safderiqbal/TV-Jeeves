@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using TVJeeves.Base.BusinessLogic;
+using TVJeeves.Base.Entities;
 
 namespace TVJeeves.Dialog
 {
@@ -39,8 +40,8 @@ namespace TVJeeves.Dialog
 
             ThumbnailCard plCard = new ThumbnailCard()
             {
-                Title = "Do you want a quick look at what's on?",
-                Subtitle = "",
+                Title = "",
+                Subtitle = "I've selected some of your favourite channels, anything here here interest you?",
                 Buttons = cardButtons
             };
             Attachment plAttachment = plCard.ToAttachment();
@@ -58,12 +59,16 @@ namespace TVJeeves.Dialog
             {
                 case "sports":
                     var cc = context.MakeMessage();
-                    var suggestions = new SuggestionService().GetProgrammesOnChannels(new List<int>());
+                    var suggestions = new SuggestionService().GetProgrammesOnChannels("1301,1302,1333,1322,1303");
                     string text = "On the sports channels now...";
+
+                    int count = 1;
                     foreach (var suggestion in suggestions)
                     {
-                        text += "\n1. " + suggestion.Name;
-                        text += " on " + suggestion.Channel + " for the next ";// + (suggestion.EndTime - DateTime.Now).Minutes;
+                        context.UserData.SetValue("sp" + count, suggestion.EventId);
+                        text += "\n1. _" + suggestion.Name;
+                        text += "_ on " + suggestion.Channel; //+ " for the next ";// + (suggestion.EndTime - DateTime.Now).Minutes;
+                        count++;
                     }
                     text += "\n\nWould you like more details of any of these? Enter the number for more details.";
                     cc.Text = text;
@@ -77,8 +82,10 @@ namespace TVJeeves.Dialog
 
                 default:
                     var ccf = context.MakeMessage();
-
-                    ccf.Text = "That works : " + message.Text;
+                    string eventid;
+                    context.UserData.TryGetValue("sp" + message.Text, out eventid);
+                    Suggestion s = new SuggestionService().GetById(eventid);
+                    ccf.Text = "That works : " + s.Name;
                     await context.PostAsync(ccf);
                     break;
             }
@@ -89,8 +96,11 @@ namespace TVJeeves.Dialog
             
             var message = await argument;
             var ccf = context.MakeMessage();
+            string eventid;
+            context.UserData.TryGetValue("sp" + message.Text, out eventid);
+            Suggestion s = new SuggestionService().GetById(eventid);
+            ccf.Text = "That works : " + s.Name;
 
-            ccf.Text = "That works : " + message.Text;
             await context.PostAsync(ccf);
             context.Done("stes");
         }
