@@ -12,7 +12,7 @@ namespace TVJeeves.Core.BusinessLogic
 
         public GenreService()
         {
-            ApiEndpoint = "http://hack2016.trivv.io/sky/channel/genre/";
+            ApiEndpoint = "http://hack2016.trivv.io/sky/genre/";
         }
 
         public List<TVShow> Get(string genreId, string subGenreId)
