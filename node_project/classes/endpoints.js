@@ -3,12 +3,47 @@ const keys      = require('../keys.json');
 const sky       = require('./sky');
 const clockwork = require('clockwork')({key : keys.clockwork});
 const omdb      = require('omdb');
+const tvdb      = require('./tvdb');
+
+//TVDB
+
+let getFromTvdb = (title, callback) => {
+    tvdb.getFromTvdb(title, (error, data) => {
+        if (!!error)
+            return callback(error);
+
+        return callback(null, data);
+    });
+};
+
+exports.getFromTvdb = (req, res) => {
+    getFromTvdb(req.params.title, (error, data) => {
+        if (!!error)
+            return res.status(400).send(error);
+
+        return res.send(data);
+    });
+};
 
 // OMDB
 let getShowFromTitle = (title, callback) => {
     console.log('omdb - getShowFromTitle - title : ' + title);
     omdb.get({title}, true, (err, show) => {
-        if (err)
+        if (!!err)
+            return callback(err);
+
+        if (!show)
+            return callback({error : 'Show not found'});
+
+        callback(null, show);
+    });
+};
+
+let getShowPosterFromTitle = (title, callback) => {
+    console.log('omdb - getShowPosterFromTitle - title : ' + title);
+
+    omdb.get({title}, true, (err, show) => {
+        if (!!err)
             return callback(err);
 
         if (!show)
@@ -21,9 +56,18 @@ let getShowFromTitle = (title, callback) => {
 exports.getShowFromTitle = (req, res) => {
     getShowFromTitle(req.params.title, (error, data) => {
         if (!!error)
-            res.status(400).send(error);
+            return res.status(400).send(error);
 
-        res.send(data);
+        return res.send(data);
+    });
+};
+
+exports.getShowPosterFromTitle = (req, res) => {
+    getShowPosterFromTitle(req.params.title, (error, data) => {
+        if (!!error)
+            return res.status(400).send(error);
+
+        return res.send(data);
     });
 };
 
@@ -124,11 +168,8 @@ let getRandomShow = (callback) => {
         sky.matchChannelId(showData.channelid, (error2, channelData) => {
             if (!!error2)
                 return callback(error2);
-            
-            delete showData.channelid;
-            showData.channel = channelData;
 
-            callback(null, showData);
+            return callback(null, showData);
         });
     })
 };
