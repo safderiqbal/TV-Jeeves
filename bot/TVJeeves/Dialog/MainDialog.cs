@@ -55,7 +55,7 @@ namespace TVJeeves.Dialog
                new RegexCase<IDialog<string>>(new Regex("(:?.*)?watch(:?.*)?", RegexOptions.IgnoreCase), (c, txt) =>
                {
                    return
-                   Chain.From(() => new PromptDialog.PromptString("Hi. What channel are you watching?",
+                   Chain.From(() => new PromptDialog.PromptString($"Hello. What channel are you watching?",
     "Didn't get that!", 3))
                    .ContinueWith(async (context, response) =>
                    {
