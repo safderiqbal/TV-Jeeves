@@ -119,7 +119,8 @@ namespace TVJeeves.Dialog
                     Title = tvShow.title,
                     Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelid + ") - " + tvShow.startAsDateTime.ToString(),
                     Text = $"{tvShow.shortDesc}",
-                    Images = new List<CardImage> { new CardImage(url: imgUrl) }
+                    Images = new List<CardImage> { new CardImage(url: imgUrl) },
+                    Buttons = new List<CardAction> { new CardAction() { Value = "watch", Type = "postBack", Title = "Watch" } }
                 };
                 Attachment plAttachment = plCard.ToAttachment();
                 cc.Attachments.Add(plAttachment);
