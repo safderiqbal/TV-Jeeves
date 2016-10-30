@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using TVJeeves.Base.BusinessLogic;
 using TVJeeves.Base.Entities;
+using TVJeeves.Core.BusinessLogic;
 using TVJeeves.Core.Entities;
 
 namespace TVJeeves.Dialog
@@ -110,12 +111,15 @@ namespace TVJeeves.Dialog
                 cc.Type = "message";
                 cc.Attachments = new List<Attachment>();
 
+                var poster = new PosterService().Get(tvShow.title);
+                var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://cdn.instructables.com/FTU/1BBR/FLI8MT4O/FTU1BBRFLI8MT4O.MEDIUM.jpg";
+
                 var plCard = new ThumbnailCard()
                 {
                     Title = tvShow.title,
                     Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelid + ") - " + tvShow.startAsDateTime.ToString(),
-                    Text = $"{tvShow.shortDesc} - {tvShow.startAsDateTime.ToString()}",
-                    Images = new List<CardImage> { new CardImage(url: "https://cdn.instructables.com/FTU/1BBR/FLI8MT4O/FTU1BBRFLI8MT4O.MEDIUM.jpg") }
+                    Text = $"{tvShow.shortDesc}",
+                    Images = new List<CardImage> { new CardImage(url: imgUrl) }
                 };
                 Attachment plAttachment = plCard.ToAttachment();
                 cc.Attachments.Add(plAttachment);
