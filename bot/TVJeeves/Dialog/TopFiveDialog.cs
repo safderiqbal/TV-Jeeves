@@ -46,7 +46,7 @@ namespace TVJeeves.Dialog
                     var plCard = new ThumbnailCard()
                     {
                         Title = tvShow.title,
-                        Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelid + ") - " + tvShow.startAsDateTime.ToString(),
+                        Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelno + ") - " + tvShow.startAsDateTime.ToString(),
                         Text = $"{tvShow.shortDesc} - {tvShow.startAsDateTime.ToString()}",
                         Images = new List<CardImage> { new CardImage(url: imgUrl) }
                     };
