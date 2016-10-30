@@ -53,7 +53,7 @@ namespace TVJeeves.Dialog
 
         public async Task HandleSuggestionResponse(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
-            var message = await argument;   
+            var message = await argument;
 
             switch (message.Text.ToLower())
             {
@@ -67,18 +67,19 @@ namespace TVJeeves.Dialog
                 default:
                     var ccf = context.MakeMessage();
                     string eventid;
-                    if(context.UserData.TryGetValue("sp" + message.Text, out eventid))
+                    if (context.UserData.TryGetValue("sp" + message.Text, out eventid))
                     {
                         Suggestion s = new SuggestionService().GetById(eventid);
                         ccf.Text = "That works : " + s.Name;
                         await context.PostAsync(ccf);
 
-                    }else
+                    }
+                    else
                     {
                         await HandleSuggestionResponse(context, argument);
                     }
-                    
-                    
+
+
                     break;
             }
 
@@ -107,7 +108,7 @@ namespace TVJeeves.Dialog
 
         public async Task HandleProgramSelection(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
-            
+
             var message = await argument;
             var ccf = context.MakeMessage();
             string eventid;
@@ -140,15 +141,26 @@ namespace TVJeeves.Dialog
                 };
                 Attachment plAttachment = plCard.ToAttachment();
                 ccf.Attachments.Add(plAttachment);
+                await context.PostAsync(ccf);
+                context.Wait(HandleProgramChosen);
             }
             else
             {
                 await HandleSuggestionResponse(context, argument);
+                await context.PostAsync(ccf);
+                context.UserData.SetValue("welcomeMessageSeen", false);
+                context.UserData.SetValue("success", true);
+                context.Done("Success");
             }
-            
 
-            await context.PostAsync(ccf);
-            context.Done("stes");
+
+
+        }
+
+        public async Task HandleProgramChosen(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        {
+            context.UserData.SetValue("welcomeMessageSeen", false);
+            context.Done("Success");
         }
 
     }
