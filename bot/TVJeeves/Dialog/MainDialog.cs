@@ -42,7 +42,7 @@ namespace TVJeeves.Dialog
                new RegexCase<IDialog<string>>(new Regex("^hi|hello|greetings", RegexOptions.IgnoreCase), (c, txt) =>
                {
                    return
-                   Chain.From(() => new PromptDialog.PromptString("Welcome! My name is Jeeves and I will guide you today. What channel are you watching?",
+                   Chain.From(() => new PromptDialog.PromptString("Hi. What channel are you watching?",
     "Didn't get that!", 3))
                    .ContinueWith(async (context, response) =>
                    {
