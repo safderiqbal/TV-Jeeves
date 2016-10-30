@@ -120,6 +120,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Services\ChannelService.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialog\MainDialog.cs" />
     <Compile Include="Dialog\QuickCategoryDialog.cs" />
