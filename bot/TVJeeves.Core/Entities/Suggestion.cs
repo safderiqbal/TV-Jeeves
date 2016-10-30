@@ -7,12 +7,16 @@ namespace TVJeeves.Base.Entities
 {
     public class Suggestion
     {
+        public string EventId { get; set; }
+
         public string Name { get; set; }
 
         public string ImageUrl { get; set; }
 
         public string Channel { get; set; }
 
-        public string Time { get; set; }
+        public DateTime StartTime { get; set; }
+
+        public DateTime EndTime { get; set; }
     }
 }
