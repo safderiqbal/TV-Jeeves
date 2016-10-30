@@ -97,6 +97,20 @@ exports.sendSms = (req, res) => {
 
 // Sky
 
+let getFullChannelRef = (shows, callback) => {
+    shows.forEach((show) => {
+        sky.matchChannelId(show.channelid, (error, channelData) => {
+            if (!!error)
+                return callback(error);
+
+            delete show.channelid;
+            show.channel = channelData;
+        });
+    });
+
+    return callback(null, shows);
+};
+
 let getChannelFromName = (channelName, results, callback) => {
     console.log('sky - getChannelFromName - channelName : ' + channelName + ' results : ' + results);    
     results = results || 5;
@@ -118,10 +132,16 @@ let getChannelFromId = (channelId, callback) => {
 
 let getCurrentShowFromChannel = (channelId, callback) => {
     console.log('sky - getCurrentShowFromChannel - channelId : ' + channelId);  
-    sky.getCurrentShow(channelId, (error, data) => {
-        return !error
-            ? callback(null, data)
-            : callback(error);
+    sky.getCurrentShow(channelId, (error, showData) => {
+        if (!!error)
+            return callback(error);
+
+        getFullChannelRef(showData, (error, data) => {
+            if (!!error)
+                return callback(error);
+
+            callback(null, data);
+        });
     });
 };
 
@@ -141,19 +161,14 @@ let getGenreWithChannel = (genreId, subGenreId, callback) => {
         if (!!error)
             return callback(error);
 
-        showData.forEach((show) => {
-            sky.matchChannelId(show.channelid, (error2, channelData) => {
-                if (!!error2)
-                    return callback(error2);
+        getFullChannelRef(showData, (error, data) => {
+            if (!!error)
+                return callback(error);
 
-                delete show.channelid;
-                show.channel = channelData;
-            });
+            callback(null, data);
         });
-
-        callback(null, showData);
     });
-}
+};
 
 let getRandomShow = (callback) => {
     console.log('sky - getRandomShow');
@@ -169,9 +184,12 @@ let getRandomShow = (callback) => {
             if (!!error2)
                 return callback(error2);
 
+            showData.channel = channelData;
+            delete showData.channelid;
+
             return callback(null, showData);
         });
-    })
+    });
 };
 
 exports.getChannelFromName = (req, res) => {
