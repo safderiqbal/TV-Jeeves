@@ -16,7 +16,7 @@ namespace TVJeeves.Dialog
     {
         public static string optionsString="\n\nI can show you what's on your _favourite_ channels, *suggest* something based on what you are watching or give you a *surprise*.\n\nWhat would you like to do?";
         public static string welcomeGreeting = "Greetings, I'm *Jeeves*. I'll help you decide what to watch on TV." + optionsString;
-        public static string baseGreeting = "I'm not sure what you mean by that." + optionsString + "\n\nSay favourite, suggest or surprise.";
+        public static string baseGreeting = "I'm not sure what you mean by that." + optionsString + "\n\nSay watch, favourite, suggest or surprise.";
 
         public static readonly IDialog<string> dialog = Chain.PostToChain()
            .Select(msg => msg.Text)
