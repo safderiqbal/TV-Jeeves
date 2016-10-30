@@ -24,7 +24,7 @@ namespace TVJeeves.Core.BusinessLogic
             try
             {
                 var client = new WebClient();
-                var content = client.DownloadString(ApiEndPoint + channel);
+                var content = client.DownloadString(ApiEndPoint + "channel/name/" + channel);
                 channels = JsonConvert.DeserializeObject<List<Channel>>(content);
             } catch (Exception e)
             {
