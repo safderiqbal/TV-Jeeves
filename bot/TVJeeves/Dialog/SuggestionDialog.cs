@@ -10,16 +10,13 @@ using TVJeeves.Base.BusinessLogic;
 namespace TVJeeves.Dialog
 {
     [Serializable]
-    public class SuggestionDialog : IDialog<object>
+    public class SuggestionDialog : IDialog<string>
     {
         public async Task StartAsync(IDialogContext context)
         {
             var cc = context.MakeMessage();
 
-            cc.Text = "Are you looking for something to watch?";
-            await context.PostAsync(cc);
-
-            cc.Text = "Do any of these things sound good?";
+            cc.Text = "Here are some of the shows that everyone is talking about?";
             await context.PostAsync(cc);
 
             var replyToConversation = context.MakeMessage();
@@ -56,7 +53,7 @@ namespace TVJeeves.Dialog
             }
 
 
-            replyToConversation.AttachmentLayout = "carousel";
+            replyToConversation.AttachmentLayout = AttachmentLayoutTypes.Carousel;
 
             await context.PostAsync(replyToConversation);
             context.Wait(HandleSuggestionResponse);
@@ -65,11 +62,16 @@ namespace TVJeeves.Dialog
         public async Task HandleSuggestionResponse(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var message = await argument;
-
-            var cc = context.MakeMessage();
-
-            cc.Text = "That works" + message.Text;
-            await context.PostAsync(cc);
+            if (message.Text == "watch")
+            {
+                context.UserData.SetValue("welcomeMessageSeen", false);
+                context.Done("Success");
+            }else
+            {
+                context.UserData.SetValue("welcomeMessageSeen", false);
+                context.Done("No");
+            }
+            
         }
     }
 }
