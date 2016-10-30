@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using TVJeeves.Base.BusinessLogic;
 using TVJeeves.Core.BusinessLogic;
 using TVJeeves.Core.Entities;
 
@@ -63,12 +64,16 @@ namespace TVJeeves.Dialog
                    .ContinueWith(async (context, response) =>
                    {
                        var channel = (Tuple<string, List<Channel>>)await response;
-                       Channel output;
+                       var genre = channel.Item2.First().genre.First();
+                       var currentlyOnChannel = new SuggestionService().Get(channel.Item2.First().channelid.ToString()).First();
 
-                       if (!channel.Item2.Any())
-                           return Chain.Return($"Cannot find channel {channel.Item1}");
+                       //query by genre
 
-                       return Chain.Return($"you are watching {channel.Item1}");
+                       var output = $"Here are some other programs currently showing of the same genre of {genre.name}";
+
+                       //build programs output to list 
+
+                       return Chain.Return(output);
                    });
                }),
                new RegexCase<IDialog<string>>(new Regex("^surprise", RegexOptions.IgnoreCase), (context, txt) =>
