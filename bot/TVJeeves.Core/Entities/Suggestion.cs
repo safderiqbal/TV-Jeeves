@@ -16,6 +16,7 @@ namespace TVJeeves.Base.Entities
         public string Channel { get; set; }
 
         public string GenreId { get; set; }
+        public string SubGenreId { get; set; }
 
         public DateTime StartTime { get; set; }
 

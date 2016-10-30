@@ -47,7 +47,7 @@ namespace TVJeeves.Dialog
                               return Chain.Return(baseGreeting);
                           });
                }),
-               new RegexCase<IDialog<string>>(new Regex("^hi|hello|greetings", RegexOptions.IgnoreCase), (c, txt) =>
+               new RegexCase<IDialog<string>>(new Regex("(:?.*)?watch(:?.*)?", RegexOptions.IgnoreCase), (c, txt) =>
                {
                    return
                    Chain.From(() => new PromptDialog.PromptString("Hi. What channel are you watching?",
@@ -74,11 +74,15 @@ namespace TVJeeves.Dialog
                        var genre = channel.Item2.First().genre.First();
                        var currentlyOnChannel = new SuggestionService().Get(channel.Item2.First().channelid.ToString()).First();
 
-                       //query by genre
+                       var shows = new GenreService().Get(genre.genreid, currentlyOnChannel.SubGenreId).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
 
-                       var output = $"Here are some other programs currently showing of the same genre of {genre.name}";
+                       var output = $"Here are some other programs currently showing of the same genre of {genre.name} \n";
 
-                       //build programs output to list 
+                       for (int i = 0; i < (shows.Count >= 10 ? 10: shows.Count); i++)
+                       {
+                           output += $"{shows[i].channel.channelno}. {shows[i].channel.title} {shows[i].title} \n";
+                           output += $"**Short Desc** {shows[i].shortDesc} \n";
+                       }
 
                        return Chain.Return(output);
                    });

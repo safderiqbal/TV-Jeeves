@@ -44,10 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessLogic\GenreService.cs" />
     <Compile Include="BusinessLogic\SuggestionService.cs" />
     <Compile Include="Entities\Channel.cs" />
     <Compile Include="Entities\genre.cs" />
     <Compile Include="Entities\Suggestion.cs" />
+    <Compile Include="Entities\TVShow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
