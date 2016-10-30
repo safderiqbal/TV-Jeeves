@@ -76,21 +76,23 @@ namespace TVJeeves.Dialog
                    .ContinueWith(async (context, response) =>
                    {
                        var channel = (Tuple<string, List<Channel>>)await response;
-                       var genre = channel.Item2.First().genre.First();
-                       var currentlyOnChannel = new SuggestionService().Get(channel.Item2.First().channelid.ToString()).First();
+                       //var genre = channel.Item2.First().genre.First();
+                       //var currentlyOnChannel = new SuggestionService().Get(channel.Item2.First().channelid.ToString()).First();
 
-                       var shows = new GenreService().Get(genre.genreid, currentlyOnChannel.SubGenreId).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
+                       //var shows = new GenreService().Get(genre.genreid, currentlyOnChannel.SubGenreId).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
 
-                       var output = $"You are currently watching **{currentlyOnChannel.Name}**\n";
-                       output += $"Here are some other programs currently showing of the same genre of **{genre.name}** \n";
+                       //var output = $"You are currently watching **{currentlyOnChannel.Name}**,\n";
+                       //output += $"here are some other programs currently showing of the same genre of **{genre.name}** \n";
 
-                       for (int i = 0; i < (shows.Count >= 10 ? 10: shows.Count); i++)
-                       {
-                           output += $"{shows[i].channel.channelno}. {shows[i].channel.title} {shows[i].title} \n";
-                           output += $"**Short Desc** {shows[i].shortDesc} *{shows[i].startAsDateTime}*\n";
-                       }
-
-                       return Chain.Return(output);
+                       //for (int i = 0; i < (shows.Count >= 10 ? 10 : shows.Count); i++)
+                       //{
+                       //    output += $"{shows[i].channel.channelno}. {shows[i].channel.title} {shows[i].title} \n";
+                       //    output += $"**Short Desc** {shows[i].shortDesc} *{shows[i].startAsDateTime}*\n";
+                       //}
+                       return Chain.ContinueWith(new TopFiveDialog(channel), async (x, y) => {
+                           await y;
+                           return Chain.Return("Hope the selection is to your taste.");
+                       });
                    });
                }),
                new RegexCase<IDialog<string>>(new Regex("(?:.*)surprise(?:.*)", RegexOptions.IgnoreCase), (context, txt) =>
