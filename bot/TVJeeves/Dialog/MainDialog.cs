@@ -14,9 +14,9 @@ namespace TVJeeves.Dialog
     [Serializable]
     public class MainDialog
     {
-        public static string optionsString="\n\nI can show you what's on your _favourite_ channels, *suggest* something based on what you are watching or give you a *surprise*.\n\nWhat would you like to do?";
+        public static string optionsString="\n\nI can show you what's on your _favourite_ channels, _suggest_ some popular shows, recommend something based on what you are _watching_ or give you a _surprise_.\n\nWhat would you like to do?";
         public static string welcomeGreeting = "Greetings, I'm *Jeeves*. I'll help you decide what to watch on TV." + optionsString;
-        public static string baseGreeting = "I'm not sure what you mean by that." + optionsString + "\n\nSay watch, favourite, suggest or surprise.";
+        public static string baseGreeting = "I'm not sure what you mean by that." + optionsString + "\n\nSay _favourite_, _suggest_, _watching_ or _surprise_.";
 
         public static readonly IDialog<string> dialog = Chain.PostToChain()
            .Select(msg => msg.Text)
@@ -32,7 +32,6 @@ namespace TVJeeves.Dialog
 
                               if (message.ToLower()=="success")
                               {
-                                  //context.UserData.SetValue("welcomeMessageSeen", false);
                                   return Chain.Return("Enjoy the show! Start chatting again anytime to get another suggestion.");
                               }
                               return Chain.Return(baseGreeting);
@@ -44,6 +43,12 @@ namespace TVJeeves.Dialog
                           async (ctx, res) =>
                           {
                               var message = await res;
+                              bool success;
+
+                              if (message.ToLower() == "success")
+                              {
+                                  return Chain.Return("Enjoy the show! Start chatting again anytime to get another suggestion.");
+                              }
                               return Chain.Return(baseGreeting);
                           });
                }),

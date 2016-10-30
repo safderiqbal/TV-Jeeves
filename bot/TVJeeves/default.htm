@@ -1,20 +1,89 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title></title>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Chat with TV Jeeves</title>
+
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
-<body style="font-family:'Segoe UI'">
-    <h1>TVJeeves</h1>
-    <p>Describe your bot here and your terms of use etc.</p>
+
+<body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <img src="perkins_logo.png" style="height:40px;padding-top:10px;margin-right:10px" />
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Chat with TV Jeeves</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+
+    <div class="container theme-showcase" role="main">
+
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+            <div style="float:left;height:300px">
+                <img src="perkins_logo_512.png" style="height:200px;margin-right:25px;margin-top:25px" />
+            </div>
+            <h2>Chat with TV Jeeves below</h2>
+            <p>Have trouble deciding what to watch next? Overwhelemed by the choice in the TV guide?</p>
+            <p>Then let a friendly hand guide you on your way. Have a chat with TV Jeeves and easily decide what you want to watch.</p>
+            <p>
+                Chat also available using
+
+                <a href='https://join.skype.com/bot/589167ea-758a-45b9-a31a-3c496c7837ad'><img src='https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png' /></a>
+                <a href="https://slack.com/oauth/authorize?scope=bot&client_id=89076630258.97977902245&redirect_uri=https%3a%2f%2fslack.botframework.com%2fHome%2fauth&state=tv_jeeves"><img height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"></a>
+                <a href='https://www.messenger.com/t/1791384841100298'><img src='https://facebook.botframework.com/Content/MessageUs.png'></a>
+
+            </p>
+            <p>
+                Or text your request to <a href="tel:+441202286393">01202 286393</a>
+            </p>
+        </div>
+
+        <iframe src="https://webchat.botframework.com/embed/tv_jeeves?s=S21O4DuIlz4.cwA.xcQ.vO_vEe_jYrlRC33QPzLqbZZo_fKGz0exNIRejFRIJZs" style="height: 452px; max-height: 452px; width:100%; border:1px solid silver"></iframe>
 
 
-    <p>Visit <a href="https://www.botframework.com/">Bot Framework</a> to register your bot. When you register it, remember to set your bot's endpoint to <pre>https://<i>your_bots_hostname</i>/api/messages</pre></p>
-    <a href='https://join.skype.com/bot/589167ea-758a-45b9-a31a-3c496c7837ad'><img src='https://dev.botframework.com/Client/Images/Add-To-Skype-Buttons.png' /></a>
-    <a href="https://slack.com/oauth/authorize?scope=bot&client_id=89076630258.97977902245&redirect_uri=https%3a%2f%2fslack.botframework.com%2fHome%2fauth&state=tv_jeeves"><img height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"></a>
-    <a href='https://www.messenger.com/t/1791384841100298'><img src='https://facebook.botframework.com/Content/MessageUs.png'></a>
-
-    <iframe src="https://webchat.botframework.com/embed/tv_jeeves?s=S21O4DuIlz4.cwA.xcQ.vO_vEe_jYrlRC33QPzLqbZZo_fKGz0exNIRejFRIJZs" style="height: 502px; max-height: 502px;"></iframe>
+    </div> <!-- /container -->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 </body>
 </html>
+
+
+
+
+
+
+
