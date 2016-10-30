@@ -114,7 +114,19 @@ exports.getCurrentShow = (channelId, callback) => {
 
             let data = JSON.parse(body);
 
-            callback(null, data.channels.program[0]);
+            if (!data.channels) {
+                return callback({error: 'Invalid channel ID'});
+            }
+
+            if (!(data.channels instanceof Array)) {
+                data.channels = [data.channels];
+            }
+            
+            data.channels.map((val) => {
+                return val.program[0];
+            })
+
+            callback(null, data.channels);
         });
 };
 
