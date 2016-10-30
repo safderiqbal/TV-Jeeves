@@ -72,6 +72,7 @@ let getChannelFromId = (channelId, callback) => {
 }
 
 let getCurrentShowFromChannel = (channelId, callback) => {
+    console.log('sky - getCurrentShowFromChannel - channelId : ' + channelId);  
     sky.getCurrentShow(channelId, (error, data) => {
         return !error
             ? callback(null, data)
@@ -80,6 +81,7 @@ let getCurrentShowFromChannel = (channelId, callback) => {
 };
 
 let getMatchingGenre = (genreId, subGenreId, callback) => {
+    console.log('sky - getMatchingGenre - genreId : ' + genreId + ' subGenreId : ' + subGenreId);  
     sky.getMatchingGenre(genreId, subGenreId, (error, data) => {
         return !error
             ? callback(null, data)
