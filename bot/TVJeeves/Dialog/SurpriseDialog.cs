@@ -18,19 +18,28 @@ namespace TVJeeves.Dialog
             var tvShow = new ShowService().Random();
 
             cc.Text = "I've selected a surprise show for you...\n";
-            cc.Text += $"{tvShow.channel.channelno}. {tvShow.channel.title} **{tvShow.title}** {tvShow.shortDesc} on at *{tvShow.startAsDateTime.ToString()}*";
+
+            cc.Type = "message";
+            cc.Attachments = new List<Attachment>();
+
+            var plCard = new ThumbnailCard()
+            {
+                Title = tvShow.title,
+                Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelid  + ") - " + tvShow.startAsDateTime.ToString(),
+                Text = $"{tvShow.shortDesc} - {tvShow.startAsDateTime.ToString()}",
+                Images = new List<CardImage> { new CardImage(url: "https://cdn.instructables.com/FTU/1BBR/FLI8MT4O/FTU1BBRFLI8MT4O.MEDIUM.jpg") }
+            };
+            Attachment plAttachment = plCard.ToAttachment();
+            cc.Attachments.Add(plAttachment);
+
+            //cc.Text += $"{tvShow.channel.channelno}. {tvShow.channel.title} **{tvShow.title}** {tvShow.shortDesc} on at *{tvShow.startAsDateTime.ToString()}*";
             await context.PostAsync(cc);
-            context.Reset();
+            context.Wait(HandleSuggestionResponse);
         }
 
         public async Task HandleSuggestionResponse(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
-            var message = await argument;
-
-            var cc = context.MakeMessage();
-
-            cc.Text = "That works" + message.Text;
-            await context.PostAsync(cc);
+            context.Done(this);
         }
     }
 }
