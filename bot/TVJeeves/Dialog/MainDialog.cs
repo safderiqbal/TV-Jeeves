@@ -79,9 +79,9 @@ namespace TVJeeves.Dialog
                        var genre = channel.Item2.First().genre.First();
                        var currentlyOnChannel = new SuggestionService().Get(channel.Item2.First().channelid.ToString()).First();
 
-                       var shows = new GenreService().Get(genre.genreid, currentlyOnChannel.SubGenreId).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
+                       var shows = new GenreService().Get(genre.genreid, currentlyOnChannel.subgenre.ToString()).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
 
-                       var output = $"You are currently watching **{currentlyOnChannel.Name}**\n";
+                       var output = $"You are currently watching **{currentlyOnChannel.channel.title}**\n";
                        output += $"Here are some other programs currently showing of the same genre of **{genre.name}** \n";
 
                        for (int i = 0; i < (shows.Count >= 10 ? 10: shows.Count); i++)

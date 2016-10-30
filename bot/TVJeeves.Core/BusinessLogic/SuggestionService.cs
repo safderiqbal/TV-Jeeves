@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using TVJeeves.Base.Entities;
+using TVJeeves.Core.Entities;
 
 namespace TVJeeves.Base.BusinessLogic
 {
@@ -15,38 +16,42 @@ namespace TVJeeves.Base.BusinessLogic
     {
         public string ApiEndPoint;
 
-        public static Dictionary<string, Suggestion> savedSuggestions = new Dictionary<string, Suggestion>();
+        public static Dictionary<string, TVShow> savedSuggestions = new Dictionary<string, TVShow>();
 
         public SuggestionService()
         {
             ApiEndPoint = "http://hack2016.trivv.io/sky/channel/current/";
         }
 
-        public List<Suggestion> Get(string channel)
+        public List<TVShow> Get(string channel)
         {
-            var suggestions = new List<Suggestion>();
+            var suggestions = new List<TVShow>();
             try
             {
                 var client = new WebClient();
                 var content = client.DownloadString(ApiEndPoint + channel);
 
-            var jsonResponse = JsonConvert.DeserializeObject<List<dynamic>>(content);
+            suggestions = JsonConvert.DeserializeObject<List<TVShow>>(content);
 
-                foreach(var item in jsonResponse)
+                foreach (var item in suggestions)
+                {
+                    savedSuggestions[item.eventid.ToString()] = item;
+                }
+                /*foreach(var item in jsonResponse)
                 {
                     var sg =
                     new Suggestion()
                     {
-                        EventId = item.eventid,
+                        /*EventId = item.eventid,
                         Name = item.title,
                         Channel = item.channelid,
                         GenreId = item.genre,
                         Description = item.shortDesc,
-                        SubGenreId = item.subgenre
-                    };
-                    suggestions.Add(sg);
-                    savedSuggestions[sg.EventId] = sg;
-                }
+                        SubGenreId = item.subgenre*/
+                // };
+                //suggestions.Add(sg);
+                //savedSuggestions[sg.EventId] = sg;
+                // }*/
             }
             catch (Exception e)
             {
@@ -55,21 +60,33 @@ namespace TVJeeves.Base.BusinessLogic
             return suggestions;
         }
 
-        public Suggestion GetById(string id)
+        public TVShow GetById(string id)
         {
             //ToDo error catching on this
             return savedSuggestions[id];
         }
 
-        public List<Suggestion> GetUserSuggestions()
+        public List<TVShow> GetUserSuggestions()
         {
-            return new List<Suggestion>()
+            return new List<TVShow>()
             {
-                new Suggestion() {Name="Breaking Bad", ImageUrl="http://images.zap2it.com/assets/p185846_b_h3_ad/breaking-bad.jpg", Channel="Sky One", StartTime=DateTime.Now },
-                new Suggestion() {Name="Game of Thrones", ImageUrl="http://media.moddb.com/images/members/1/123/122021/profile/c9lzmv4d3mgzpnyntz7s.jpg", Channel="Sky Atlantic", StartTime=DateTime.Now }
+                new TVShow() {
+                    title ="Game of Thrones",
+                    shortDesc ="First of His Name: Tywin and Cersei plot the Crown's next move, while, in the north, Jon embarks on a new mission. Violence, strong language and adult themes. (S4, ep 5) Also in HD",
+                    channel=new Channel {title="Sky Atlantic", channelno=108 },
+                    imageurl ="http://media.moddb.com/images/members/1/123/122021/profile/c9lzmv4d3mgzpnyntz7s.jpg",
+                    start="1477821000000"
+                    },
+                new TVShow() { 
+                    title ="Breaking Bad",
+                    shortDesc ="Walt ties up loose ends, but when confronted with evidence of his success he makes a startling and dangerous decision.",
+                    channel=new Channel {title="AMC", channelno=276 },
+                    imageurl ="http://images.zap2it.com/assets/p185846_b_h3_ad/breaking-bad.jpg",
+                    start="1477821000000"
+                }
             };
         }
-        public List<Suggestion> GetProgrammesOnChannels(string Channels)
+        public List<TVShow> GetProgrammesOnChannels(string Channels)
         {
             return Get(Channels);// "1301,1302,1333,1322,1303");
             

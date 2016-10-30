@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using TVJeeves.Base.BusinessLogic;
 using TVJeeves.Base.Entities;
+using TVJeeves.Core.Entities;
 
 namespace TVJeeves.Dialog
 {
@@ -66,20 +67,11 @@ namespace TVJeeves.Dialog
 
                 default:
                     var ccf = context.MakeMessage();
-                    string eventid;
-                    if (context.UserData.TryGetValue("sp" + message.Text, out eventid))
-                    {
-                        Suggestion s = new SuggestionService().GetById(eventid);
-                        ccf.Text = "That works : " + s.Name;
-                        await context.PostAsync(ccf);
-
-                    }
-                    else
-                    {
-                        await HandleSuggestionResponse(context, argument);
-                    }
-
-
+                    ccf.Text = "Let's try again.";
+                    await context.PostAsync(ccf);
+                    context.UserData.SetValue("welcomeMessageSeen", false);
+                    context.UserData.SetValue("success", false);
+                    context.Done("Failure");
                     break;
             }
 
@@ -94,9 +86,9 @@ namespace TVJeeves.Dialog
             int count = 1;
             foreach (var suggestion in suggestions)
             {
-                context.UserData.SetValue("sp" + count, suggestion.EventId);
-                text += "\n1. _" + suggestion.Name;
-                text += "_ on " + suggestion.Channel; //+ " for the next ";// + (suggestion.EndTime - DateTime.Now).Minutes;
+                context.UserData.SetValue("sp" + count, suggestion.eventid);//.EventId);
+                text += "\n1. _" + suggestion.title;//.Name;
+                text += "_ on " + suggestion.channel.title;//.Channel; //+ " for the next ";// + (suggestion.EndTime - DateTime.Now).Minutes;
                 count++;
             }
             text += "\n\nWould you like more details of any of these? Enter the number for more details.";
@@ -110,44 +102,32 @@ namespace TVJeeves.Dialog
         {
 
             var message = await argument;
-            var ccf = context.MakeMessage();
+            var cc = context.MakeMessage();
             string eventid;
             if (context.UserData.TryGetValue("sp" + message.Text, out eventid))
             {
-                ccf.Attachments = new List<Attachment>();
-                Suggestion suggestion = new SuggestionService().GetById(eventid);
+                TVShow tvShow = new SuggestionService().GetById(eventid);
+                cc.Type = "message";
+                cc.Attachments = new List<Attachment>();
 
-                List<CardImage> cardImages = new List<CardImage>();
-                if (!string.IsNullOrEmpty(suggestion.ImageUrl))
+                var plCard = new ThumbnailCard()
                 {
-                    cardImages.Add(new CardImage(url: suggestion.ImageUrl));
-                }
-
-                List<CardAction> cardButtons = new List<CardAction>();
-                CardAction plButton = new CardAction()
-                {
-                    Value = "watch",
-                    Type = "postBack",
-                    Title = "Watch"
-                };
-                cardButtons.Add(plButton);
-
-                ThumbnailCard plCard = new ThumbnailCard()
-                {
-                    Title = suggestion.Name,
-                    Subtitle = suggestion.Description,
-                    Images = cardImages,
-                    Buttons = cardButtons
+                    Title = tvShow.title,
+                    Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelid + ") - " + tvShow.startAsDateTime.ToString(),
+                    Text = $"{tvShow.shortDesc} - {tvShow.startAsDateTime.ToString()}",
+                    Images = new List<CardImage> { new CardImage(url: "https://cdn.instructables.com/FTU/1BBR/FLI8MT4O/FTU1BBRFLI8MT4O.MEDIUM.jpg") }
                 };
                 Attachment plAttachment = plCard.ToAttachment();
-                ccf.Attachments.Add(plAttachment);
-                await context.PostAsync(ccf);
+                cc.Attachments.Add(plAttachment);
+
+                
+                await context.PostAsync(cc);
                 context.Wait(HandleProgramChosen);
             }
             else
             {
                 await HandleSuggestionResponse(context, argument);
-                await context.PostAsync(ccf);
+                await context.PostAsync(cc);
                 context.UserData.SetValue("welcomeMessageSeen", false);
                 context.UserData.SetValue("success", true);
                 context.Done("Success");

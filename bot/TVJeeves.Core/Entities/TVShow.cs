@@ -38,5 +38,7 @@ namespace TVJeeves.Core.Entities
         public string scheduleStatus { get; set; }
 
         public Channel channel {get;set;}
+
+        public string imageurl { get; set; }
     }
 }

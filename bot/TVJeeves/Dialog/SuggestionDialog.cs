@@ -30,7 +30,7 @@ namespace TVJeeves.Dialog
             foreach (var suggestion in sportSuggestions)
             {
                 List<CardImage> cardImages = new List<CardImage>();
-                cardImages.Add(new CardImage(url: suggestion.ImageUrl));
+                cardImages.Add(new CardImage(url: suggestion.imageurl));
 
                 List<CardAction> cardButtons = new List<CardAction>();
                 CardAction plButton = new CardAction()
@@ -43,8 +43,9 @@ namespace TVJeeves.Dialog
 
                 ThumbnailCard plCard = new ThumbnailCard()
                 {
-                    Title = suggestion.Name,
-                    Subtitle = suggestion.Channel,
+                    Title = suggestion.title,
+                    Subtitle = suggestion.channel.title + " (" + suggestion.channel.channelid + ") - " + suggestion.startAsDateTime.ToString(),
+                    Text = $"{suggestion.shortDesc}",
                     Images = cardImages,
                     Buttons = cardButtons
                 };
