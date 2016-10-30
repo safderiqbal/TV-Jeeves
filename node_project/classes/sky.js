@@ -24,7 +24,7 @@ let getGenre = (id) => {
     });
 };
 
-exports.matchChannel = (channelName, numResults, callback) => {
+exports.matchChannelName = (channelName, numResults, callback) => {
     const options = {
         extract: (ele) => {
             return ele.title;
@@ -51,6 +51,25 @@ exports.matchChannel = (channelName, numResults, callback) => {
     }
 
     return callback({error: 'Could not find a matching channel'});
+};
+
+exports.matchChannelId = (channelId, callback) => {
+    let result = setup.channels.find((element) => {
+        return element.channelid === channelId;
+    });
+
+    if (!result)
+        return callback({error: 'Could not find a matching channel'});
+    
+    let object = {};
+    object.channelno = result.channelno;
+    object.title = result.title;
+    object.channelid = result.channelid;
+    object.epggenre = getEpgGenre(result.epggenre);
+    object.genre = getGenre(result.genre);
+    object.channeltype = getChannelType(result.channeltype);
+
+    return callback(null, object);
 };
 
 exports.getCurrentShow = (channelId, callback) => {

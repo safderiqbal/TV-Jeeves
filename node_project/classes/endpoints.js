@@ -56,12 +56,20 @@ exports.sendSms = (req, res) => {
 let getChannelFromName = (channelName, results, callback) => {
     console.log('sky - getChannelFromName - channelName : ' + channelName + ' results : ' + results);    
     results = results || 5;
-    sky.matchChannel(channelName, results, (error, data) => {
+    sky.matchChannelName(channelName, results, (error, data) => {
         return !error
             ? callback(null, data)
             : callback(error);
     });
 };
+
+let getChannelFromId = (channelId, callback) => {
+    sky.matchChannelId(channelId, (error, data) => {
+        return !error
+            ? callback(null, data)
+            : callback(error);
+    });
+}
 
 let getCurrentShowFromChannel = (channelId, callback) => {
     sky.getCurrentShow(channelId, (error, data) => {
@@ -80,28 +88,37 @@ let getMatchingGenre = (genreId, subGenreId, callback) => {
 };
 
 exports.getChannelFromName = (req, res) => {
-    getChannelFromName(req.params.channel, req.query.results, (error, data) => {
+    getChannelFromName(req.params.channelName, req.query.results, (error, data) => {
         if (!!error)
-            res.status(400).send(error);
+            return res.status(400).send(error);
 
-        res.send(data);
+        return res.send(data);
+    });
+};
+
+exports.getChannelFromId = (req, res) => {
+    getChannelFromId(req.params.channelId, (error, data) => {
+        if (!!error)
+            return res.status(400).send(error);
+
+        return res.send(data);
     });
 };
 
 exports.getCurrentShowFromChannel = (req, res) => {
     getCurrentShowFromChannel(req.params.channelId, (error, data) => {
         if (!!error)
-            res.status(400).send(error);
+            return res.status(400).send(error);
 
-        res.send(data);
+        return res.send(data);
     });
 };
 
 exports.getMatchingGenre = (req, res) => {
     getMatchingGenre(req.params.genreId, req.query.subGenreId, (error, data) => {
         if (!!error)
-            res.status(400).send(error);
+            return res.status(400).send(error);
 
-        res.send(data);
+        return res.send(data);
     });
 };
