@@ -13,6 +13,8 @@ namespace TVJeeves.Base.Entities
 
         public string Channel { get; set; }
 
-        public string Time { get; set; }
+        public DateTime StartTime { get; set; }
+
+        public DateTime EndTime { get; set; }
     }
 }

@@ -113,7 +113,7 @@
   <ItemGroup>
     <Content Include="default.htm" />
     <Content Include="Global.asax" />
-    <Content Include="perkins_logo.png" />
+    <Content Include="perkins_logo_512.png" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -121,6 +121,9 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Dialog\MainDialog.cs" />
+    <Compile Include="Dialog\QuickCategoryDialog.cs" />
+    <Compile Include="Dialog\SuggestionDialog.cs" />
     <Compile Include="Dialog\WelcomeDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
