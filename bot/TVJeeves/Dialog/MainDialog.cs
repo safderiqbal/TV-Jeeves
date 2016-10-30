@@ -27,7 +27,14 @@ namespace TVJeeves.Dialog
                    return Chain.ContinueWith(new QuickCategoryDialog(),
                           async (ctx, res) =>
                           {
-                              await res;
+                              var message = await res;
+                              bool success;
+
+                              if (message.ToLower()=="success")
+                              {
+                                  //context.UserData.SetValue("welcomeMessageSeen", false);
+                                  return Chain.Return("Enjoy the show! Start chatting again anytime to get another suggestion.");
+                              }
                               return Chain.Return(baseGreeting);
                            });
                }),
@@ -36,7 +43,7 @@ namespace TVJeeves.Dialog
                    return Chain.ContinueWith(new SuggestionDialog(),
                           async (ctx, res) =>
                           {
-                              await res;
+                              var message = await res;
                               return Chain.Return(baseGreeting);
                           });
                }),
@@ -85,7 +92,7 @@ namespace TVJeeves.Dialog
                    return Chain.ContinueWith(new SurpriseDialog(),
                           async (ctx, res) =>
                           {
-                              await res;
+                              var message = await res;
                               return Chain.Return(baseGreeting);
                           });
                }),
@@ -96,6 +103,7 @@ namespace TVJeeves.Dialog
                    if (!welcomeMessageSeen)
                    {
                        context.UserData.SetValue("welcomeMessageSeen", true);
+                       context.UserData.SetValue("success", false);
                        return Chain.Return(welcomeGreeting);
                    }
                    else
