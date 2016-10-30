@@ -93,26 +93,24 @@ exports.matchChannelId = (channelId, callback) => {
 };
 
 exports.getCurrentShow = (channelId, callback) => {
-    request.get(`http://epgservices.sky.com/tvlistings-proxy/TVListingsProxy/tvlistings.json?channels=${channelId}&time=${moment().format('YYYYMMDDHH') + '00'}&dur=119&siteId=1&detail=2`,
+    request.get(`http://epgservices.sky.com/tvlistings-proxy/TVListingsProxy/tvlistings.json?channels=${channelId}&time=${moment().format('YYYYMMDDHHmm')}&dur=119&siteId=1&detail=2`,
         (error, response, body) => {
             if(!!error)
                 callback(error);
 
             let data = JSON.parse(body);
 
-            if (!data.channels) {
-                return callback({error: 'Invalid channel ID'});
-            }
-
-            if (!(data.channels instanceof Array)) {
-                data.channels = [data.channels];
-            }
-            
-            data.channels.map((val) => {
-                return val.program[0];
-            })
-
-            callback(null, data.channels);
+            if (!(data.channels instanceof Array)) { 
+                let tmp = [];
+                tmp.push(data.channels);
+                data.channels = tmp; 
+            } 
+             
+            data.channels = data.channels.map((val) => { 
+                return val.program[0]; 
+            });
+ 
+            callback(null, data.channels); 
         });
 };
 
