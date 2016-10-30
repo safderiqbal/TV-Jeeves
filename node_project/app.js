@@ -27,8 +27,7 @@ app.get('/sms/:to/:body', endpoints.sendSms);
 app.get('/sky/channel/id/:channelId', endpoints.getChannelFromId);
 app.get('/sky/channel/name/:channelName', endpoints.getChannelFromName);
 app.get('/sky/channel/current/:channelId', endpoints.getCurrentShowFromChannel);
-app.get('/sky/channel/genre/:genreId', endpoints.getGenreWithChannel);
-app.get('/sky/genre/:genreId', endpoints.getMatchingGenre);
+app.get('/sky/genre/:genreId', endpoints.getGenreWithChannel);
 app.get('/sky/show/random', endpoints.getRandomShow);
 
 // log 404s
