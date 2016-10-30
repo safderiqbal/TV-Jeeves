@@ -114,13 +114,21 @@
     <Content Include="default.htm" />
     <Content Include="Global.asax" />
     <Content Include="perkins_logo.png" />
+    <Content Include="perkins_logo_512.png" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Dialog\SurpriseDialog.cs" />
+    <Compile Include="Dialog\TopFiveDialog.cs" />
+    <Compile Include="Services\ChannelService.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Dialog\MainDialog.cs" />
+    <Compile Include="Dialog\QuickCategoryDialog.cs" />
+    <Compile Include="Dialog\SuggestionDialog.cs" />
+    <Compile Include="Dialog\WelcomeDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -128,12 +136,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\TVJeeves - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TVJeeves.Core\TVJeeves.Core.csproj">
+      <Project>{AD35D514-BD5A-4795-B2AB-6469DC36FF3D}</Project>
+      <Name>TVJeeves.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

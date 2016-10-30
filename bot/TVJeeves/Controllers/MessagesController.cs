@@ -8,6 +8,10 @@ using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Dialogs;
+using System.Collections.Generic;
+using TVJeeves.Base.BusinessLogic;
+using TVJeeves.Dialog;
+using System.Text.RegularExpressions;
 
 namespace TVJeeves
 {
@@ -15,25 +19,21 @@ namespace TVJeeves
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-
-        public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
+        public virtual async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
-            ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-            if (activity.Type == ActivityTypes.Message)
+            // check if activity is of type message
+            if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
-                // return our reply to the user
-                Activity reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                await connector.Conversations.ReplyToActivityAsync(reply);
+                await Conversation.SendAsync(activity, () => MainDialog.dialog);
             }
             else
             {
                 HandleSystemMessage(activity);
             }
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            return response;
+            return new HttpResponseMessage(System.Net.HttpStatusCode.Accepted);
         }
+
+
 
         private Activity HandleSystemMessage(Activity message)
         {
@@ -64,4 +64,5 @@ namespace TVJeeves
             return null;
         }
     }
+
 }
