@@ -100,6 +100,10 @@ exports.getCurrentShow = (channelId, callback) => {
 
             let data = JSON.parse(body);
 
+            if (!data.channels) {
+                return callback({error: 'Invalid channel ID'});
+            }
+
             callback(null, data.channels.program[0]);
         });
 };
