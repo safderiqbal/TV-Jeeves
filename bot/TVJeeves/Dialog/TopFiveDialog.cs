@@ -29,9 +29,9 @@ namespace TVJeeves.Dialog
             var genre = _things.Item2.First().genre.First();
             var currentlyOnChannel = new SuggestionService().Get(_things.Item2.First().channelid.ToString()).First();
 
-            var shows = new GenreService().Get(genre.genreid, currentlyOnChannel.SubGenreId).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
+            var shows = new GenreService().Get(genre.genreid, currentlyOnChannel.subgenre.ToString()).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
 
-            var output = $"You are currently watching **{currentlyOnChannel.Name}**\n";
+            var output = $"You are currently watching **{currentlyOnChannel.title}**\n";
             output += $"Here are some other programs currently showing of the same genre of **{genre.name}** \n";
 
             if (shows.Count != 0)
@@ -41,7 +41,7 @@ namespace TVJeeves.Dialog
                     var tvShow = shows[i];
 
                     var poster = new PosterService().Get(tvShow.title);
-                    var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://cdn.instructables.com/FTU/1BBR/FLI8MT4O/FTU1BBRFLI8MT4O.MEDIUM.jpg";
+                    var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRj0YzDMrnC8kqGjvTH3tQ_VpVY4HbtcpGCNcJ_tR4WdiMKvjYc";
 
                     var plCard = new ThumbnailCard()
                     {
