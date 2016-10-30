@@ -25,7 +25,7 @@ app.get('/sky/channel/id/:channelId', endpoints.getChannelFromId);
 app.get('/sky/channel/name/:channelName', endpoints.getChannelFromName);
 app.get('/sky/channel/current/:channelId', endpoints.getCurrentShowFromChannel);
 app.get('/sky/genre/:genreId', endpoints.getMatchingGenre);
-app.get('/sky/show/random/:eventId', endpoints.getRandomShow);
+app.get('/sky/show/random', endpoints.getRandomShow);
 //app.get('/sky/channel/upcoming/:channel', endpoints.getChannelUpcoming);
 
 // log 404s

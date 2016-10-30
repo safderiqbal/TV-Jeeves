@@ -39,10 +39,24 @@ let getAllChannelListing = (errorMessage, callback) => {
             if (!data.channels || data.channels.length < 1)
                 return callback({error: errorMessage});
 
+            data.channels.forEach((val) => {
+                if (!Array.isArray(val.program)) {
+                    let temp = [];
+                    temp.push(val.program);
+                    val.program = temp;
+                }
+            });
+
             return callback(null, data);
         }
     );
-}
+};
+
+let getRandomNumber = (min, max) => {
+  let range = (max - min) + 1;
+
+  return Math.floor(Math.random() * range) + min;
+};
 
 exports.matchChannelName = (channelName, numResults, callback) => {
     const options = {
@@ -122,12 +136,24 @@ exports.getMatchingGenre = (genreId, subGenreId, callback) => {
             return callback(error);
 
         let results = data.channels.filter((val) => {
-            return val.program.genre === genreId;
+            let subFilter = val.program.filter((object) => {
+                return object.genre == genreId;
+            });
+
+            val.program = subFilter;
+
+            return val.program.length > 0;
         });
 
         if (subGenreId !== '') {
             results = results.filter((val) => {
-                return val.program.subgenre === subGenreId;
+                let subFilter = val.program.filter((object) => {
+                    return object.subgenre == subGenreId;
+                });
+
+                val.program = subFilter;
+
+                return val.program.length > 0;;
             });
         }
 
@@ -135,27 +161,20 @@ exports.getMatchingGenre = (genreId, subGenreId, callback) => {
             return val.program;
         });
 
+        results = [].concat.apply([], results);
+
         callback(null, results);
     });
 };
 
-exports.getRandomShow = (eventId, callback) => {
-    getAllChannelListing('Could not find the current show you are watching', (error, data) => {
+exports.getRandomShow = (callback) => {
+    getAllChannelListing('Could not find any shows', (error, data) => {
         if (!!error)
             return callback(error);
 
-        return callback(null, data);
+        let randomChannel = data.channels[getRandomNumber(0, data.channels.length - 1)];
+        let randomShow = randomChannel.program[getRandomNumber(0, randomChannel.program.length - 1)];
 
-        data.channels.map((val) => {
-            console.log(val.program);
-        });
-        
-        let result = data.channels.filter((val) => {
-            return val.program.eventid === eventId;
-        });
-
-        result = result.program;
-
-        callback(null, result);
+        callback(null, randomShow);
     });
 };
