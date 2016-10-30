@@ -1,9 +1,12 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Connector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using TVJeeves.Core.BusinessLogic;
+using TVJeeves.Core.Entities;
 
 namespace TVJeeves.Dialog
 {
@@ -35,6 +38,38 @@ namespace TVJeeves.Dialog
                               await res;
                               return Chain.Return(baseGreeting);
                           });
+               }),
+               new RegexCase<IDialog<string>>(new Regex("^hi|hello|greetings", RegexOptions.IgnoreCase), (c, txt) =>
+               {
+                   return
+                   Chain.From(() => new PromptDialog.PromptString("Welcome! My name is Jeeves and I will guide you today. What channel are you watching?",
+    "Didn't get that!", 3))
+                   .ContinueWith(async (context, response) =>
+                   {
+                       if (!string.IsNullOrEmpty(await response))
+                       {
+                           var res = await response;
+                           var channels = new ChannelService().Get(res);
+
+                           if (!channels.Any())
+                               return Chain.Return(new Tuple<string, List<Channel>>(res, new List<Channel>()));
+
+                           context.UserData.SetValue("channels", channels);
+                           context.UserData.SetValue("channelsInd", 0);
+                           return Chain.Return(new Tuple<string, List<Channel>>(res, channels));
+                       }
+                       return Chain.Return(new Tuple<string, List<Channel>>("Error", new List<Channel>()));
+                   })
+                   .ContinueWith(async (context, response) =>
+                   {
+                       var channel = (Tuple<string, List<Channel>>)await response;
+                       Channel output;
+
+                       if (!channel.Item2.Any())
+                           return Chain.Return($"Cannot find channel {channel.Item1}");
+
+                       return Chain.Return($"you are watching {channel.Item1}");
+                   });
                }),
                new DefaultCase<string, IDialog<string>>((context, txt) =>
                {
