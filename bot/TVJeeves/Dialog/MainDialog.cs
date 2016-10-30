@@ -22,7 +22,7 @@ namespace TVJeeves.Dialog
            .Select(msg => msg.Text)
            .Switch(
 
-               new RegexCase<IDialog<string>>(new Regex("^favourite", RegexOptions.IgnoreCase), (context, txt) =>
+               new RegexCase<IDialog<string>>(new Regex("(?:.*)favo(?:u)?rite(?:.*)", RegexOptions.IgnoreCase), (context, txt) =>
                {
                    return Chain.ContinueWith(new QuickCategoryDialog(),
                           async (ctx, res) =>
@@ -37,7 +37,7 @@ namespace TVJeeves.Dialog
                               return Chain.Return(baseGreeting);
                            });
                }),
-               new RegexCase<IDialog<string>>(new Regex("^suggest", RegexOptions.IgnoreCase), (context, txt) =>
+               new RegexCase<IDialog<string>>(new Regex("(?:.*)suggest(?:.*)", RegexOptions.IgnoreCase), (context, txt) =>
                {
                    return Chain.ContinueWith(new SuggestionDialog(),
                           async (ctx, res) =>
@@ -52,7 +52,7 @@ namespace TVJeeves.Dialog
                               return Chain.Return(baseGreeting);
                           });
                }),
-               new RegexCase<IDialog<string>>(new Regex("(:?.*)?watch(:?.*)?", RegexOptions.IgnoreCase), (c, txt) =>
+               new RegexCase<IDialog<string>>(new Regex("(?:.*)watch(?:.*)", RegexOptions.IgnoreCase), (c, txt) =>
                {
                    return
                    Chain.From(() => new PromptDialog.PromptString($"Hello. What channel are you watching?",
@@ -93,7 +93,7 @@ namespace TVJeeves.Dialog
                        return Chain.Return(output);
                    });
                }),
-               new RegexCase<IDialog<string>>(new Regex("^surprise", RegexOptions.IgnoreCase), (context, txt) =>
+               new RegexCase<IDialog<string>>(new Regex("(?:.*)surprise(?:.*)", RegexOptions.IgnoreCase), (context, txt) =>
                {
                    return Chain.ContinueWith(new SurpriseDialog(),
                           async (ctx, res) =>
