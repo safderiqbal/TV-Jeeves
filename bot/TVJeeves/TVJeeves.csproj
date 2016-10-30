@@ -113,6 +113,7 @@
   <ItemGroup>
     <Content Include="default.htm" />
     <Content Include="Global.asax" />
+    <Content Include="perkins_logo.png" />
     <Content Include="perkins_logo_512.png" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
