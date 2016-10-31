@@ -22,6 +22,8 @@ namespace TVJeeves.Dialog
 
         public async Task StartAsync(IDialogContext context)
         {
+            await context.PostAsync("Please wait...");
+
             var cc = context.MakeMessage();
             cc.Type = "message";
             cc.Attachments = new List<Attachment>();

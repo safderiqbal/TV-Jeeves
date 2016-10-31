@@ -14,6 +14,8 @@ namespace TVJeeves.Dialog
     {
         public async Task StartAsync(IDialogContext context)
         {
+            await context.PostAsync("Please wait...");
+
             var cc = context.MakeMessage();
 
             cc.Text = "Here are some of the shows that everyone is talking about?";
