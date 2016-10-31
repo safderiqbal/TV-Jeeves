@@ -2,6 +2,7 @@
     "apps" : [{
         "name"   : "hackmcr2016",
         "script" : "./app.js",
-        "watch"  : true
+        "watch"  : true,
+        "env"    : { "PORT": "7001" }
     }]
 }
