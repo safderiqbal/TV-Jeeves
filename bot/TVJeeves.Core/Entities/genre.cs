@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TVJeeves.Core.Entities
 {
+    [Serializable]
     public class genre
     {
         public string genreid { get; set; }

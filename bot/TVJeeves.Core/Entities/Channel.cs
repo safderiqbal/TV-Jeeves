@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TVJeeves.Core.Entities
 {
+    [Serializable]
     public class Channel
     {
         public int channelno { get; set; }
