@@ -42,7 +42,9 @@ namespace TVJeeves.Dialog
 
         private async Task PromptComplete(IDialogContext context, IAwaitable<Channel> result) {
             var channel = await result;
-            await context.PostAsync($"test complete, great channel choice {channel.channelno}:{channel.title}");
+
+            context.UserData.SetValue("SelectedChannel", channel);
+            await context.PostAsync($"great channel choice {channel.channelno}:{channel.title}");
 
             PromptDialog.Confirm(context, OnAcceptance, "Do you want to watching something similar?");
         }
@@ -50,9 +52,56 @@ namespace TVJeeves.Dialog
         private async Task OnAcceptance(IDialogContext context, IAwaitable<bool> result)
         {
             if (await result)
-                await context.PostAsync("Let see what we have...");
+            {
+                var selectedChannel = context.UserData.Get<Channel>("SelectedChannel");
+                var currentShow = new SuggestionService().Get(selectedChannel.channelid.ToString()).First();
+                context.Call(new ChannelFinderDialog(currentShow), FoundTvShows);
+            }
             else
                 await context.PostAsync("What genre would you like to watch?");
+        }
+
+        private async Task FoundTvShows(IDialogContext context, IAwaitable<List<TVShow>> result)
+        {
+            var tvshows = await result;
+
+            var cc = context.MakeMessage();
+            cc.Type = "message";
+            cc.Attachments = new List<Attachment>();
+
+            //var output = $"You are currently watching **{currentlyOnChannel.title}**\n";
+            var output = "I think you will find the following programmes absolutely riveting \n";
+
+            if (tvshows.Count != 0)
+            {
+                for (int i = 0; i < (tvshows.Count >= 10 ? 10 : tvshows.Count); i++)
+                {
+                    var tvShow = tvshows[i];
+
+                    var poster = new PosterService().Get(tvShow.title);
+                    var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRj0YzDMrnC8kqGjvTH3tQ_VpVY4HbtcpGCNcJ_tR4WdiMKvjYc";
+
+                    var plCard = new ThumbnailCard()
+                    {
+                        Title = tvShow.title,
+                        Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelno + ") - " + tvShow.startAsDateTime.ToString(),
+                        Text = $"{tvShow.shortDesc} - {tvShow.startAsDateTime.ToString()}",
+                        Images = new List<CardImage> { new CardImage(url: imgUrl) }
+                    };
+                    Attachment plAttachment = plCard.ToAttachment();
+                    cc.Attachments.Add(plAttachment);
+                }
+                cc.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+            } else
+            {
+                output += "*Sorry no matches found.";
+            }
+
+            cc.Text = output;
+
+            await context.PostAsync(cc);
+
+            await context.PostAsync("I hope these treats are to your taste!");
 
             context.Wait(MessageReceived);
         }
@@ -129,7 +178,7 @@ namespace TVJeeves.Dialog
                     Attachment plAttachment = plCard.ToAttachment();
                     cc.Attachments.Add(plAttachment);
                 }
-                cc.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+            cc.AttachmentLayout = AttachmentLayoutTypes.Carousel;
             }
             else
             {
@@ -139,6 +188,25 @@ namespace TVJeeves.Dialog
             await context.PostAsync(cc);
 
             context.Wait(MessageReceived);
+        }
+    }
+
+    public class ChannelFinderDialog : IDialog<List<TVShow>>
+    {
+        private readonly TVShow _currentShow;
+
+        public ChannelFinderDialog(TVShow currentShow)
+        {
+            _currentShow = currentShow;
+        }
+
+        public async Task StartAsync(IDialogContext context)
+        {
+            await context.PostAsync("Let see what we have...");
+
+            var shows = new GenreService().Get(_currentShow.genre.ToString(), _currentShow.subgenre.ToString()).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
+
+            context.Done(shows);
         }
     }
 

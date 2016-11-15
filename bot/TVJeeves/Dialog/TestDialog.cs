@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using TVJeeves.Core.BusinessLogic;
 using TVJeeves.Core.Entities;
 
@@ -38,7 +37,7 @@ namespace TVJeeves.Dialog
                 }
 
                 var output = "Please confirm by selecting one of the options below\n";
-                for (int i = 0; i < _channels.Count; i++)
+                for (var i = 0; i < _channels.Count; i++)
                 {
                     var chan = _channels.ElementAt(i);
                     output += $"{i + 1}. {chan.channelno} {chan.title}\n";

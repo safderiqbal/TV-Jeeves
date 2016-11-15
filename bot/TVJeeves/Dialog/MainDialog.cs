@@ -1,11 +1,8 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Connector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
-using TVJeeves.Base.BusinessLogic;
 using TVJeeves.Core.BusinessLogic;
 using TVJeeves.Core.Entities;
 

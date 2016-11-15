@@ -1,17 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
-using Newtonsoft.Json;
 using Microsoft.Bot.Builder.Dialogs;
-using System.Collections.Generic;
-using TVJeeves.Base.BusinessLogic;
 using TVJeeves.Dialog;
-using System.Text.RegularExpressions;
 using Microsoft.Bot.Builder.FormFlow;
 
 namespace TVJeeves

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TVJeeves.Core.Entities
 {
+    [Serializable]
     public class TVShow
     {
         public int eventid { get; set; }
