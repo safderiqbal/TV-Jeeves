@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Dialog\ChannelFinderDialog.cs" />
     <Compile Include="Dialog\TestDialog.cs" />
     <Compile Include="Dialog\SurpriseDialog.cs" />
     <Compile Include="Dialog\TopFiveDialog.cs" />

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 using Microsoft.Bot.Connector;
@@ -15,15 +14,8 @@ namespace TVJeeves.Dialog
 {
     [LuisModel("d06caa29-6134-4bd8-ae11-860d3e329df2", "d015704f441847dcba2dfedeeff6669c")]
     [Serializable]
-    public class WatchLuisDialog : LuisDialog<Watch>
+    public class WatchLuisDialog : LuisDialog<object>
     {
-        private readonly BuildFormDelegate<Watch> WatchForm;
-
-        internal WatchLuisDialog(BuildFormDelegate<Watch> watchForm)
-        {
-            WatchForm = watchForm;
-        }
-
         [LuisIntent("")]
         public async Task None(IDialogContext context, LuisResult result)
         {
@@ -34,8 +26,6 @@ namespace TVJeeves.Dialog
         [LuisIntent("ChannelSurfing")]
         public async Task WatchNextForm(IDialogContext context, LuisResult result)
         {
-            var entities = new List<EntityRecommendation>(result.Entities);
-            var form = new FormDialog<Watch>(new Watch(), WatchForm, FormOptions.PromptInStart, entities);
             var dialog = new TestDialog();
             context.Call(dialog, PromptComplete);
         }
@@ -134,90 +124,31 @@ namespace TVJeeves.Dialog
             context.Wait(MessageReceived);
         }
 
-        private async Task FormComplete(IDialogContext context, IAwaitable<Watch> result)
+        [LuisIntent("CheckChannel")]
+        public async Task CheckChannel(IDialogContext context, LuisResult result)
         {
-            Watch order = null;
-            try
+            var foundEntity = result.Entities.FirstOrDefault();
+
+            if (foundEntity != null)
             {
-                order = await result;
-            }
-            catch (OperationCanceledException)
-            {
-                await context.PostAsync("You canceled the form!");
-                return;
-            }
-
-            var channels = new ChannelService().Get(order.channel);
-            var show = new SuggestionService().Get(channels.First().channelid.ToString()).First();
-
-            await context.PostAsync($"Channel {order.channel} is currently showing {show.title}");
-            await context.PostAsync($"Please wait while we find some suggestions.");
-
-            var shows = new GenreService().Get(show.genre.ToString(), show.subgenre.ToString()).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
-
-            var cc = context.MakeMessage();
-            cc.Type = "message";
-            cc.Attachments = new List<Attachment>();
-
-            if (shows.Count != 0)
-            {
-                for (int i = 0; i < (shows.Count >= 10 ? 10 : shows.Count); i++)
+                var channels = new ChannelService().Get(foundEntity.Entity);
+                if (!channels.Any())
                 {
-                    var tvShow = shows[i];
-
-                    var poster = new PosterService().Get(tvShow.title);
-                    var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRj0YzDMrnC8kqGjvTH3tQ_VpVY4HbtcpGCNcJ_tR4WdiMKvjYc";
-
-                    var plCard = new ThumbnailCard()
-                    {
-                        Title = tvShow.title,
-                        Subtitle = tvShow.channel.title + " (" + tvShow.channel.channelno + ") - " + tvShow.startAsDateTime.ToString(),
-                        Text = $"{tvShow.shortDesc} - {tvShow.startAsDateTime.ToString()}",
-                        Images = new List<CardImage> { new CardImage(url: imgUrl) }
-                    };
-                    Attachment plAttachment = plCard.ToAttachment();
-                    cc.Attachments.Add(plAttachment);
+                    await context.PostAsync($"Sorry. I couldn't find channel {foundEntity.Entity}. Please try again.");
+                    context.Wait(MessageReceived);
+                    return;
                 }
-            cc.AttachmentLayout = AttachmentLayoutTypes.Carousel;
+
+                var channel = channels.First();
+                var currentShow = new SuggestionService().Get(channel.channelid.ToString()).First();
+                await context.PostAsync($"{currentShow.channel.title} is currently showing {currentShow.title}");
             }
             else
             {
-                cc.Text = "*Sorry no matches found.";
+                await context.PostAsync("Pardon. I couldn't understand which channel you are watching.");
             }
-
-            await context.PostAsync(cc);
 
             context.Wait(MessageReceived);
         }
-    }
-
-    public class ChannelFinderDialog : IDialog<List<TVShow>>
-    {
-        private readonly TVShow _currentShow;
-
-        public ChannelFinderDialog(TVShow currentShow)
-        {
-            _currentShow = currentShow;
-        }
-
-        public async Task StartAsync(IDialogContext context)
-        {
-            await context.PostAsync("Let see what we have...");
-
-            var shows = new GenreService().Get(_currentShow.genre.ToString(), _currentShow.subgenre.ToString()).Where(x => x.scheduleStatus != "PLAYING_NOW").ToList();
-
-            context.Done(shows);
-        }
-    }
-
-    [Serializable]
-    public class Watch
-    {
-        [Prompt("What channel are you watching? {||}")]
-        public string channel;
-    }
-    public enum ChannelOptions
-    {
-        Channel1, Channel2, Channel3
     }
 }

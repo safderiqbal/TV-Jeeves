@@ -4,7 +4,6 @@ using System.Web.Http;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using TVJeeves.Dialog;
-using Microsoft.Bot.Builder.FormFlow;
 
 namespace TVJeeves
 {
@@ -12,17 +11,12 @@ namespace TVJeeves
     [BotAuthentication]
     public class MessagesController : ApiController
     {
-        private static IForm<Watch> BuildForm()
-        {
-            return new FormBuilder<Watch>().Build();
-        }
-
         public virtual async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
             // check if activity is of type message
             if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => Chain.From(() => new WatchLuisDialog(BuildForm)));
+                await Conversation.SendAsync(activity, () => Chain.From(() => new WatchLuisDialog()));
             }
             else
             {
