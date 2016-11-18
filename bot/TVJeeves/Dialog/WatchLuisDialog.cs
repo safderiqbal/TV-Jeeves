@@ -59,17 +59,14 @@ namespace TVJeeves.Dialog
             cc.Type = "message";
             cc.Attachments = new List<Attachment>();
 
-            //var output = $"You are currently watching **{currentlyOnChannel.title}**\n";
             var output = "I think you will find the following programmes absolutely riveting \n";
 
             if (tvshows.Count != 0)
             {
-                for (int i = 0; i < (tvshows.Count >= 10 ? 10 : tvshows.Count); i++)
+                foreach (var tvShow in tvshows.Take(10))
                 {
-                    var tvShow = tvshows[i];
-
                     var poster = new PosterService().Get(tvShow.title);
-                    var imgUrl = poster != null && poster.poster != null ? poster.poster : "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRj0YzDMrnC8kqGjvTH3tQ_VpVY4HbtcpGCNcJ_tR4WdiMKvjYc";
+                    var imgUrl = poster?.poster ?? "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRj0YzDMrnC8kqGjvTH3tQ_VpVY4HbtcpGCNcJ_tR4WdiMKvjYc";
 
                     var plCard = new ThumbnailCard()
                     {
@@ -81,6 +78,7 @@ namespace TVJeeves.Dialog
                     Attachment plAttachment = plCard.ToAttachment();
                     cc.Attachments.Add(plAttachment);
                 }
+
                 cc.AttachmentLayout = AttachmentLayoutTypes.Carousel;
             } else
             {
@@ -148,6 +146,20 @@ namespace TVJeeves.Dialog
                 await context.PostAsync("Pardon. I couldn't understand which channel you are watching.");
             }
 
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("Suggestion")]
+        public async Task Suggestion(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("Here are some of the shows that everyone is talking about?");
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("Favourite")]
+        public async Task Favourite(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync("I've selected some of your favourite channels, anything here here interest you?");
             context.Wait(MessageReceived);
         }
     }
